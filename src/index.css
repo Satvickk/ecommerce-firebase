@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+.phone-drawer-menu-btn {
+    @apply text-lg w-full;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .hide-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+
+  .layout-desktop-container {
+    @apply sm:flex sm:flex-col sm:min-h-screen;
+  }
+
+  .layout-desktop-item-grow {
+    @apply sm:flex-grow sm:flex sm:flex-col;
+  }
