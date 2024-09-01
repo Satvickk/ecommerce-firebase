@@ -31,8 +31,9 @@ export default function CartCard({ data }) {
       >
         ✕
       </button>
-      <figure className="sm:h-[100px] sm:w-[150px]">
-        <img src={data?.featuredImage} alt="product" />
+      {/* <figure className="sm:h-[100px] sm:w-[150px] overflow-hidden"> */}
+      <figure className="sm:h-[200px] sm:w-[200px] overflow-hidden ">
+        <img src={data?.featuredImage} alt="product" className="object-cover" />
       </figure>
       <div className="card-body">
         <h2 className="card-title">{data?.title}</h2>

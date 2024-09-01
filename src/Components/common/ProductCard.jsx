@@ -101,25 +101,15 @@ export default function ProductCard({ data }) {
       </div>
 
       <ProductDetails
-        image={data?.featuredImage}
-        title={data?.title}
-        description={data?.description}
-        color={data?.color}
-        review={data?.review}
-        price={data?.price}
+        data={data}
+        label={label}
+        AddToCart={AddToCart}
       />
     </>
   );
 }
 
-const ProductDetails = ({
-  image,
-  title,
-  description,
-  color,
-  review,
-  price,
-}) => {
+const ProductDetails = ({data, label, AddToCart}) => {
   return (
     <dialog id="my_modal_3" className="modal">
       <div className="modal-box w-11/12 max-w-5xl">
@@ -134,19 +124,19 @@ const ProductDetails = ({
         <div className="hero">
           <div className="hero-content flex-col lg:flex-row">
             <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl mt-3">
-              <img src={image} alt={title || "product image"} />
+              <img src={data.featureImage} alt={data.title || "product image"} />
             </div>
             <div className="text-center lg:text-left">
-              <h1 className="text-5xl font-bold">{title}</h1>
-              <p className="pt-6 text-start">{description}</p>
+              <h1 className="text-5xl font-bold">{data.title}</h1>
+              <p className="pt-6 text-start">{data.description}</p>
               <p className="pt-2">
-                {color && (
+                {data.color.length > 0 && (
                   <div className="flex gap-2">
-                    {color.map((item) => {
+                    {data.color.map((item, index) => {
                       // console.log(item.value)
                       return(
                       <div
-                        className="w-6 h-6 rounded-full"
+                        className="w-6 h-6 rounded-full border"
                         style={{ backgroundColor: item.value }}
                         key={item.value}
                       ></div>
@@ -156,12 +146,17 @@ const ProductDetails = ({
                 )}
               </p>
               <p className="py-2 text-sm text-start">
-                Customer reviews ({review})
+                Customer reviews ({data.review})
               </p>
               <p className="py-2 text-start font-bold text-gray-700 text-lg ">
-                &#8377; {price}
+                &#8377; {data.price}
               </p>
-              <button className="btn btn-primary">Add to Cart</button>
+              <button
+                  className={`btn ${label ? "btn-primary" : "btn-success"}`}
+                  onClick={AddToCart}
+                >
+                  {label ? "Add to Cart" : "Remove"}
+                </button>
             </div>
           </div>
         </div>
