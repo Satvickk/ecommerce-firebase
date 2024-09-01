@@ -1,18 +1,23 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { setAllProductDetails } from "../../redux/productSlice";
 
-export default function FilterSelect({ title, options }) {
+export default function FilterSelect({ title, options, filterfunction, removedFilter }) {
   const [selectedValue, setSelectedValue] = useState("");
   const [showBtn, setShowBtn] = useState(false);
 
   function handleChange(e) {
-    setSelectedValue(e.target.value);
+    const value = e.target.value;
+    setSelectedValue(value);
     setShowBtn(true);
-    console.log(e.target.value);
+    filterfunction(value)
   }
 
   function handleRemoveFilter() {
     setSelectedValue("");
     setShowBtn(false);
+    // Optionally reset data to show all items when the filter is removed
+    removedFilter()
   }
 
   return (
@@ -20,7 +25,7 @@ export default function FilterSelect({ title, options }) {
       <select
         className="select select-bordered w-full max-w-xs"
         value={selectedValue}
-        onChange={(e) => handleChange(e)}
+        onChange={handleChange}
       >
         <option disabled value="">
           {title}
