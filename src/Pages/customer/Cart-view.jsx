@@ -1,8 +1,6 @@
-import React from "react";
-
-const Header = React.lazy(() => import("../../Components/Header/Header"));
-const Footer = React.lazy(() => import("../../Components/Footer/Footer"));
-const CartLayout = React.lazy(() => import("../../Components/Cart/CartLayout"))
+import Header from "../../Components/Header/Header";
+import Footer from "../../Components/Footer/Footer";
+import CartLayout from "../../Components/Cart/CartLayout";
 
 export default function CartView(){
   

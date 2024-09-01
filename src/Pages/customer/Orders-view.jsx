@@ -1,11 +1,7 @@
-import React from "react";
-
-const Header = React.lazy(() => import("../../Components/Header/Header"));
-const Footer = React.lazy(() => import("../../Components/Footer/Footer"));
-const Banner = React.lazy(() => import("../../Components/Banner/Banner"));
-const OrderLayout = React.lazy(() =>
-  import("../../Components/Orders/OrderLayout")
-);
+import Header from "../../Components/Header/Header";
+import Footer from "../../Components/Footer/Footer";
+import Banner from "../../Components/Banner/Banner";
+import OrderLayout from "../../Components/Orders/OrderLayout";
 
 export default function OrdersView() {
   return (

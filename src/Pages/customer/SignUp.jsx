@@ -1,11 +1,6 @@
-import React from "react";
-
-const Header = React.lazy(() => import("../../Components/Header/Header"));
-const SignUpForm = React.lazy(() =>
-  import("../../Components/Authentication/SignUpForm")
-);
-const Footer = React.lazy(() => import("../../Components/Footer/Footer"));
-
+import Header from "../../Components/Header/Header";
+import SignUpForm from "../../Components/Authentication/SignUpForm";
+import Footer from "../../Components/Footer/Footer";
 export default function SignUp() {
   return (
     <>

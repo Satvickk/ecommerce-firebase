@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-catch */
    
-import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { Auth } from "./config/Configuration";
+import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
+import { Auth } from "./Config/Configuration";
 
 export class AuthService {
     constructor() {
@@ -13,9 +13,8 @@ export class AuthService {
             const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
             const user = userCredential.user;
             if (user) {
-                // Optionally update user profile with name
-                await user.updateProfile({ displayName: name });
-                // call another method
+                await updateProfile(user, { displayName: name });
+                // call Login method
                 return this.login({ email, password });
             } else {
                 return user;
@@ -27,7 +26,8 @@ export class AuthService {
 
     async login({ email, password }) {
         try {
-            return await signInWithEmailAndPassword(this.auth, email, password);
+            const data = await signInWithEmailAndPassword(this.auth, email, password);
+            return data.user;
         } catch (error) {
             throw error;
         }
@@ -56,13 +56,14 @@ export class AuthService {
     async logout() {
         try {
             await signOut(this.auth);
+            return true
         } catch (error) {
             console.log("Firebase service :: logout :: error", error);
         }
     }
 }
 
-const authService = new AuthService();
+const AUTH_SERVICE = new AuthService();
 
-export default authService
+export default AUTH_SERVICE
 

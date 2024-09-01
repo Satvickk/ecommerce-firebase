@@ -1,8 +1,6 @@
-import React from "react";
-
-const Header = React.lazy(() => import("../../Components/Header/Header"));
-const Footer = React.lazy(() => import("../../Components/Footer/Footer"));
-const NotFound = React.lazy(() => import("../../Components/NotFound/NotFound"));
+import Header from "../../Components/Header/Header";
+import Footer from "../../Components/Footer/Footer";
+import NotFound from "../../Components/NotFound/NotFound";
 
 export default function Error() {
   return (
