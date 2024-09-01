@@ -1,18 +1,38 @@
-import { NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import Logo from "../common/Logo";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { deleteAuth } from "../../redux/authSlice";
+import AUTH_SERVICE from "../../Firebase/authService";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const isLoggedIn = useSelector((state) => state.Auth.isLogged);
+  const userData = useSelector((state) => state.UserDetails)
+  const UserCart = useSelector((state) => state.UserCart)
 
   function handleIsMenuOpen() {
     setIsMenuOpen(!isMenuOpen);
   }
 
-  function handleIsLoggedIn() {
-    setIsLoggedIn(!isLoggedIn);
-  }
+  const handleLogoutUser = async () => {
+    try {
+      const resp = await AUTH_SERVICE.logout();
+      if (resp) {
+        dispatch(deleteAuth());
+        window.localStorage.removeItem("authToken");
+        window.localStorage.removeItem("role");
+        toast.success("Logout Successfull ! see you soon");
+        navigate("/");
+      }
+    } catch (error) {
+      toast.error("Unable to logout");
+    }
+  };
 
   const PHONE_MENU_DATA = [
     {
@@ -49,12 +69,33 @@ export default function Header() {
       </div>
       {isLoggedIn ? (
         <div className="hidden sm:flex navbar-end gap-4 mt-3 mr-3">
+
+            {
+              userData?.userRole == 2 && 
+              <label
+              className="btn btn-circle"
+            >
+              <Link rel="noopener noreferrer" to={'/admin'}>
+                <img
+                  src="/admin-login.svg"
+                  alt="cart"
+                  className="w-6 h-6 inline-block"
+                />
+              </Link>
+            </label>
+            }
+
           <div className="dropdown dropdown-hover dropdown-end">
             <div
               tabIndex={0}
               role="button"
               className="btn btn-ghost rounded-btn"
             >
+              <img
+                  src="/menu.svg"
+                  alt="cart"
+                  className="w-6 h-6 inline-block mr-2"
+                />
               Menu
             </div>
             <ul
@@ -78,11 +119,17 @@ export default function Header() {
                   </NavLink>
                 </li>
               ))}
+              <li
+                className="text-start btn rounded-md text-red-600"
+                onClick={handleLogoutUser}
+              >
+                Logout
+              </li>
             </ul>
           </div>
 
           <div className="indicator">
-            <span className="indicator-item badge badge-secondary">6</span>
+            {UserCart?.selectedProducts.length > 0 && <span className="indicator-item badge badge-secondary">{UserCart?.selectedProducts.length}</span>}
             <label
               className="btn drawer-button border-2 rounded-md"
               htmlFor="my-drawer-4"

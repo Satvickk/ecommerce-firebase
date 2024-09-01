@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
+import { getFunctions } from "firebase/functions";
 
 // If the Project is created using Vite
 const firebaseConfig = {
@@ -23,3 +24,6 @@ export const Firestore = getFirestore(app)
 
 // firebase storage bucket
 export const Storage = getStorage(app)
+
+// firebase cloud functions
+export const CloudFunction = getFunctions(app)

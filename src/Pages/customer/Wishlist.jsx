@@ -1,11 +1,7 @@
-import React from "react";
-
-const Header = React.lazy(() => import("../../Components/Header/Header"));
-const Footer = React.lazy(() => import("../../Components/Footer/Footer"));
-const WishListProduct = React.lazy(() =>
-  import("../../Components/WishList/WishListProduct")
-);
-const Banner = React.lazy(() => import("../../Components/Banner/Banner"));
+import Header from "../../Components/Header/Header";
+import Footer from "../../Components/Footer/Footer";
+import WishListProduct from "../../Components/WishList/WishListProduct";
+import Banner from "../../Components/Banner/Banner";
 
 export default function Wishlist() {
   return (

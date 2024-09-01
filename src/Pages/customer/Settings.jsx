@@ -1,10 +1,18 @@
-import React from "react";
-import { NavLink, Outlet, useLocation } from "react-router-dom";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 
-const Header = React.lazy(() => import("../../Components/Header/Header"));
-const Footer = React.lazy(() => import("../../Components/Footer/Footer"));
+import Header from "../../Components/Header/Header";
+import Footer from "../../Components/Footer/Footer";
+import LoadingButton from "../../Components/common/LoadingButton"
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import USER_SERVICE from "../../Firebase/userService";
+import { setUserDetails , removeUserDetails } from "../../redux/userDetailSlice";
+import { deleteAuth } from "../../redux/authSlice";
+import { useUserDetails } from "../../lib/hooks/GetDetailsHooks";
 
 export default function Settings() {
+  
   const USER_SETTINGS_TABS = [
     {
       label: "Profile",
@@ -15,9 +23,36 @@ export default function Settings() {
       src: "update",
     },
   ];
-
+  
   const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  useUserDetails();
+  const UserDetails = useSelector((state) => state.UserDetails);
 
+  const [loading, setLoading] = useState();
+
+  const handleDeleteUserProfile = async() =>{
+    const id = UserDetails?.docId 
+    setLoading(true)
+    try {
+      const result = await USER_SERVICE.deleteUser(id);
+      if(result){
+        dispatch(removeUserDetails())
+        dispatch(deleteAuth())
+        toast.success("Account Deleted Successfully")
+        navigate("/")
+      }else{
+        toast.warn("Unable to delete Account! Please try again later")
+      }
+    } catch (error) {
+      console.log("error", error)
+      toast.error("Something went wrong!")
+    } finally {
+      setLoading(false);
+    }
+  }
+  
   return (
     <div className="layout-desktop-container">
       <Header />
@@ -58,21 +93,26 @@ export default function Settings() {
           </div>
         </div>
       </div>
-      <DeleteModal />
+      <DeleteModal 
+      handleDeleteUserProfile={handleDeleteUserProfile}
+      loading={loading}
+      />
       <Footer />
     </div>
   );
 }
 
-export function DeleteModal() {
+export function DeleteModal({loading, handleDeleteUserProfile}) {
   return (
     <dialog id="delete-modal" className="modal modal-bottom sm:modal-middle">
       <div className="modal-box">
         <h3 className="font-bold text-lg text-red-600">Delete Account!</h3>
-        <p className="py-4">Are you sure you want to delete your account permanently?</p>
+        <p className="py-4">Are you sure you want to delete your account permanently? <br/> All your Data will be lost! </p>
         <div className="modal-action">
           <form method="dialog">
-            <button className="btn btn-primary mr-4">Delete</button>
+            <LoadingButton className="mr-4" isLoading={loading} onClick={() => handleDeleteUserProfile()}>
+              Delete
+            </LoadingButton>
             <button className="btn">Close</button>
           </form>
         </div>

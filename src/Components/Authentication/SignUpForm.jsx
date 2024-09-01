@@ -1,48 +1,101 @@
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
+import { signinSchema } from "./form/schema";
+import { toast } from "react-toastify";
+import AUTH_SERVICE from "../../Firebase/authService";
+import USER_SERVICE from "../../Firebase/userService";
+import { useNavigate } from "react-router-dom";
+import LoadingButton from "../common/LoadingButton";
+import { useState } from "react";
+
 export default function SignUpForm() {
-    return (
-      <div className="hero bg-base-200">
-        <div className="hero-content flex-col lg:flex-row-reverse">
-          <div className="text-center lg:text-left">
-            <h1 className="text-5xl font-bold">Sign Up now!</h1>
-            <p className="py-6">
+  const navigate = useNavigate();
+
+  const [loading, setLoading] = useState(false);
+
+  const {
+    handleSubmit,
+    register,
+    reset,
+    formState: { errors },
+  } = useForm({ resolver: yupResolver(signinSchema) });
+
+  const handleSignInUser = async (values) => {
+    setLoading(true);
+    try {
+      const { email, name, password } = values;
+
+      const resp = await AUTH_SERVICE.createAccount({
+        email,
+        name,
+        password,
+      });
+
+      if (resp?.uid) {
+        await USER_SERVICE.createUser({
+          ...values,
+          userId: resp.uid,
+        });
+        toast.success("Signed In Successfully");
+        reset();
+        navigate("/");
+      }
+    } catch (error) {
+      console.error("Error in sign-in process:", error);
+      toast.error("Something went wrong!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="hero bg-base-200">
+      <div className="hero-content flex-col lg:flex-row-reverse">
+        <div className="text-center lg:text-left">
+          <h1 className="text-5xl font-bold">Sign Up now!</h1>
+          <p className="py-6">
             Join us today! Sign up to unlock exclusive benefits and offers.
-            </p>
-          </div>
-          <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
-            <form className="card-body">
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Full Name</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="Full Name"
-                  className="input input-bordered"
-                  required
-                />
-              </div>
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Email</span>
-                </label>
-                <input
-                  type="email"
-                  placeholder="Email"
-                  className="input input-bordered"
-                  required
-                />
-              </div>
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">House Address</span>
-                </label>
-                <input
-                  type="address "
-                  placeholder="House Address"
-                  className="input input-bordered"
-                  required
-                />
-              </div>
+          </p>
+        </div>
+        <div className="card bg-base-100 w-full max-w-xl shrink-0 shadow-2xl">
+          <form className="card-body" onSubmit={handleSubmit(handleSignInUser)}>
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Full Name</span>
+              </label>
+              <input
+                type="text"
+                placeholder="Full Name"
+                className="input input-bordered"
+                {...register("name")}
+              />
+              <p className="text-red-600">{errors.name?.message}</p>
+            </div>
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Email</span>
+              </label>
+              <input
+                type="email"
+                placeholder="Email"
+                className="input input-bordered"
+                {...register("email")}
+              />
+              <p className="text-red-600">{errors.email?.message}</p>
+            </div>
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">House Address</span>
+              </label>
+              <input
+                type="address "
+                placeholder="House Address"
+                className="input input-bordered"
+                {...register("address")}
+              />
+              <p className="text-red-600">{errors.address?.message}</p>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-2">
               <div className="form-control">
                 <label className="label">
                   <span className="label-text">Contact Number</span>
@@ -51,32 +104,48 @@ export default function SignUpForm() {
                   type="text"
                   placeholder="Contact number"
                   className="input input-bordered"
-                  required
+                  {...register("contact")}
                 />
+                <p className="text-red-600">{errors.contact?.message}</p>
               </div>
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text">Password</span>
+                  <span className="label-text">Pin Code</span>
                 </label>
                 <input
-                  type="password"
-                  placeholder="Password"
+                  type="text"
+                  placeholder="Pin Code"
                   className="input input-bordered"
-                  required
+                  {...register("pincode")}
                 />
-                {/* <label className="label">
+                <p className="text-red-600">{errors.pincode?.message}</p>
+              </div>
+            </div>
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Password</span>
+              </label>
+              <input
+                type="password"
+                placeholder="Password"
+                className="input input-bordered"
+                {...register("password")}
+              />
+              <p className="text-red-600">{errors.password?.message}</p>
+              {/* <label className="label">
                   <a href="#" className="label-text-alt link link-hover">
                     Forgot password?
                   </a>
                 </label> */}
-              </div>
-              <div className="form-control mt-6">
-                <button className="btn btn-primary">Sign Up</button>
-              </div>
-            </form>
-          </div>
+            </div>
+            <div className="form-control mt-6">
+              <LoadingButton type="submit" isLoading={loading}>
+                Sign Up
+              </LoadingButton>
+            </div>
+          </form>
         </div>
       </div>
-    );
-  }
-  
+    </div>
+  );
+}

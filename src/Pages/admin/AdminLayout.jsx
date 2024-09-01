@@ -1,15 +1,14 @@
-import React from "react";
 import { Outlet } from "react-router-dom";
 
-const AdminHeader = React.lazy(() => import("../../Components/Header/Admin-Header"));
-const SideBar = React.lazy(() => import("../../Components/Admin/SideBar"))
-const Footer = React.lazy(() => import("../../Components/Footer/Footer"));
+import Footer from "../../Components/Footer/Footer";
+import AdminHeader from "../../Components/Header/Admin-Header"
+import SideBar from "../../Components/Admin/SideBar"
 
 export default function AdminLayout() {
   const USER_SETTINGS_TABS = [
     {
       label: "Users",
-      src: "",
+      src: "/admin",
     },
     {
       label: "Products",
