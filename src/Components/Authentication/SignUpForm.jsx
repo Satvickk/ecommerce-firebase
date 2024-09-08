@@ -7,9 +7,13 @@ import USER_SERVICE from "../../Firebase/userService";
 import { useNavigate } from "react-router-dom";
 import LoadingButton from "../common/LoadingButton";
 import { useState } from "react";
+import WISHLIST_SERVICE from "../../Firebase/wishlistService";
+import { setWishlist } from "../../redux/userWishlist";
+import { useDispatch } from "react-redux";
 
 export default function SignUpForm() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [loading, setLoading] = useState(false);
 
@@ -36,6 +40,8 @@ export default function SignUpForm() {
           ...values,
           userId: resp.uid,
         });
+        const resp = await WISHLIST_SERVICE.createWishList(resp.uid);
+        dispatch(setWishlist({customerId: resp.uid, selectedProducts: [], totalDoc: 0}))
         toast.success("Signed In Successfully");
         reset();
         navigate("/");

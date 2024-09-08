@@ -28,47 +28,57 @@ export default function ProductRow({ responseData }) {
     setShowDeleteModal(false);
   };
 
-
-  const handleConfirmDelete = async() =>{
-      setLoading(true)
-      const { docId, fileId, stripeProductId } = responseData
-      try {
-        console.log(docId, fileId)
-        const result = await PRODUCT_SERVICE.deleteFile(fileId);
-        if(result){
-          await PRODUCT_SERVICE.deleteProductInStripe(stripeProductId);
-          await PRODUCT_SERVICE.deleteProduct(docId);
-          dispatch(removeSingleProductDetails(docId));
-          toast.success("Product Deleted Successfully")
-          setShowDeleteModal(false);
-        }else{
-          toast.warn("Unable to delete Product! Please try again later")
-        }
-      } catch (error) {
-        console.log("error", error)
-        toast.error("Something went wrong!")
-      } finally {
-        setLoading(false);
+  const handleConfirmDelete = async () => {
+    setLoading(true);
+    const { docId, fileId, stripeProductId } = responseData;
+    try {
+      console.log(docId, fileId);
+      const result = await PRODUCT_SERVICE.deleteFile(fileId);
+      if (result) {
+        await PRODUCT_SERVICE.deleteProductInStripe(stripeProductId);
+        await PRODUCT_SERVICE.deleteProduct(docId);
+        dispatch(removeSingleProductDetails(docId));
+        toast.success("Product Deleted Successfully");
+        setShowDeleteModal(false);
+      } else {
+        toast.warn("Unable to delete Product! Please try again later");
       }
+    } catch (error) {
+      console.log("error", error);
+      toast.error("Something went wrong!");
+    } finally {
+      setLoading(false);
     }
+  };
 
   return (
     <>
       <tr className="bg-white">
+        <td>
+          <div className="flex items-center gap-3 mb-2">
+            <div className="avatar">
+              <div className="mask mask-squircle h-12 w-12">
+                <img src={responseData?.featuredImage} alt="product image" />
+              </div>
+            </div>
+          </div>
+        </td>
         <td>{responseData?.title}</td>
         <td>₹ {responseData?.price}</td>
         <td>{responseData?.productType}</td>
-        {responseData?.status === 1 ? 
-        <td className="badge text-green-500 gap-2">Available</td> :
-        responseData?.status === 2 ?
-        <td className="badge text-red-500 gap-2">Not Available</td> :
-        <td className="badge text-blue-500 gap-2">Coming Soon</td> }
+        {responseData?.status === 1 ? (
+          <td className="badge text-green-500 gap-2">Available</td>
+        ) : responseData?.status === 2 ? (
+          <td className="badge text-red-500 gap-2">Not Available</td>
+        ) : (
+          <td className="badge text-blue-500 gap-2">Coming Soon</td>
+        )}
         <td>{responseData?.review}</td>
         <td className="flex gap-3">
-          <button className="btn btn-success" onClick={handleUpdateClick}>
+          <button className="btn btn-success rounded-md text-white font-bold" onClick={handleUpdateClick}>
             Edit
           </button>
-          <button className="btn btn-error" onClick={handleDeleteClick}>
+          <button className="btn btn-error rounded-md text-white font-bold" onClick={handleDeleteClick}>
             Delete
           </button>
         </td>
@@ -100,7 +110,10 @@ export default function ProductRow({ responseData }) {
             <p>Are you sure you want to delete this product?</p>
             <div className="modal-action">
               <LoadingButton
-               className="btn btn-error" isLoading={loading} onClick={handleConfirmDelete}>
+                className="btn btn-error"
+                isLoading={loading}
+                onClick={handleConfirmDelete}
+              >
                 Delete
               </LoadingButton>
               <button className="btn" onClick={closeDeleteModal}>
