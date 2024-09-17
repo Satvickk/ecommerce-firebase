@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import PRODUCT_SERVICE from "../../Firebase/productService";
 import { setAllProductDetails } from "../../redux/productSlice";
 import { toast } from "react-toastify";
+import ComingSoon from "../common/ComingSoon";
 
 export default function ProductLayout() {
   const dispatch = useDispatch();
@@ -44,7 +45,8 @@ export default function ProductLayout() {
           <h1 className="divider divider-start text-md sm:text-xl my-8 font-normal">
             Filters
           </h1>
-          <FilterBox data={AllProductsDetails?.content} />
+          {/* <FilterBox data={AllProductsDetails?.content} /> */}
+          <ComingSoon />
         </div>
         <div className="sm:col-span-2 p-4 flex flex-col gap-6">
           {AllProductsDetails?.content.map((item, index) => (

@@ -98,12 +98,12 @@ export default function ProductCard({ data }) {
             <img
               src="/heart-empty.svg"
               alt="empty-heart"
-              className="inline-block mr-2 swap-off h-6 w-6"
+              className="inline-block mr-2 swap-off h-6 w-6 mix-blend-color"
             />
             <img
               src="/heart-full.svg"
               alt="full-heart"
-              className="inline-block mr-2 swap-on h-6 w-6"
+              className="inline-block mr-2 swap-on h-6 w-6 mix-blend-color "
             />
           </label>
           <img
