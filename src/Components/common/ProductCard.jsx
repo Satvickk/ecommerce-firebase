@@ -2,11 +2,20 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addProductToCart, removeProductFromCart } from "../../redux/cartSlice";
 import { toast } from "react-toastify";
+import {
+  addProductToWishlist,
+  removeProductFromWishlist,
+} from "../../redux/userWishlist";
+import WISHLIST_SERVICE from "../../Firebase/wishlistService";
 
 export default function ProductCard({ data }) {
   const dispatch = useDispatch();
   const [label, setLabel] = useState(true);
+  const [isWishlist, setIsWishlist] = useState(true);
+
+  const Wishlist = useSelector((state) => state.Wishlist);
   const UserCart = useSelector((state) => state.UserCart);
+  const Auth = useSelector((state) => state.Auth?.isLogged);
 
   useEffect(() => {
     handleCartCheck();
@@ -16,7 +25,42 @@ export default function ProductCard({ data }) {
     document.getElementById("my_modal_3").showModal();
   };
 
+  console.log(data)
+
+  const handleIsWishlist = async () => {
+    setIsWishlist(!isWishlist);
+    // if product is added/remove to/from wishlist
+    try {
+      if (isWishlist) {
+        dispatch(addProductToWishlist({ ...data }));
+      } else {
+        dispatch(removeProductFromWishlist({ ...data }));
+      }
+      const result = await WISHLIST_SERVICE.updateWishlist(data.WishListDocId, {
+        ...Wishlist.selectedProducts,
+      });
+      if (result) {
+        toast.success(
+          `${isWishlist ? "Added to Wishlist" : "Removed from Wishlist"}`
+        );
+      }
+    } catch (error) {
+      console.log("Error:: ", error);
+      toast.error(
+        `${
+          isWishlist
+            ? "Unable to Add to Wishlist"
+            : "Unable to Remove from Wishlist"
+        }`
+      );
+    }
+  };
+
   const AddToCart = () => {
+    if (!Auth) {
+      toast.info("Please Login to Add products to Cart");
+      return;
+    }
     handleCartCheck();
     if (label) {
       // true it means it is not added and we have to add it
@@ -46,16 +90,20 @@ export default function ProductCard({ data }) {
       <div className="relative card card-compact bg-base-100 w-80 sm:w-96 shadow-xl">
         <div className="absolute z-10 top-0 right-3 flex gap-4 px-3 py-2 rounded-xl">
           <label className="swap swap-rotate">
-            <input type="checkbox" />
+            <input
+              type="checkbox"
+              value={isWishlist}
+              onChange={handleIsWishlist}
+            />
             <img
               src="/heart-empty.svg"
               alt="empty-heart"
-              className="inline-block mr-2 swap-off h-6 w-6"
+              className="inline-block mr-2 swap-off h-6 w-6 mix-blend-color"
             />
             <img
               src="/heart-full.svg"
               alt="full-heart"
-              className="inline-block mr-2 swap-on h-6 w-6"
+              className="inline-block mr-2 swap-on h-6 w-6 mix-blend-color "
             />
           </label>
           <img
@@ -71,7 +119,7 @@ export default function ProductCard({ data }) {
             className="inline-block mr-2 h-6 w-6"
           /> */}
         </div>
-      <TypeTag type={data?.productType}/>
+        <TypeTag type={data?.productType} />
         <figure className="min-h-[213px] max-h-[260px] min-w-[320px] max-w-[384px] overflow-hidden bg-black">
           <img
             src={data?.featuredImage}
@@ -100,16 +148,12 @@ export default function ProductCard({ data }) {
         </div>
       </div>
 
-      <ProductDetails
-        data={data}
-        label={label}
-        AddToCart={AddToCart}
-      />
+      <ProductDetails data={data} label={label} AddToCart={AddToCart} />
     </>
   );
 }
 
-const ProductDetails = ({data, label, AddToCart}) => {
+const ProductDetails = ({ data, label, AddToCart }) => {
   return (
     <dialog id="my_modal_3" className="modal">
       <div className="modal-box w-11/12 max-w-5xl">
@@ -124,7 +168,10 @@ const ProductDetails = ({data, label, AddToCart}) => {
         <div className="hero">
           <div className="hero-content flex-col lg:flex-row">
             <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl mt-3">
-              <img src={data.featureImage} alt={data.title || "product image"} />
+              <img
+                src={data.featureImage}
+                alt={data.title || "product image"}
+              />
             </div>
             <div className="text-center lg:text-left">
               <h1 className="text-5xl font-bold">{data.title}</h1>
@@ -134,14 +181,14 @@ const ProductDetails = ({data, label, AddToCart}) => {
                   <div className="flex gap-2">
                     {data.color.map((item, index) => {
                       // console.log(item.value)
-                      return(
-                      <div
-                        className="w-6 h-6 rounded-full border"
-                        style={{ backgroundColor: item.value }}
-                        key={item.value}
-                      ></div>
-                    )}
-                    )}
+                      return (
+                        <div
+                          className="w-6 h-6 rounded-full border"
+                          style={{ backgroundColor: item.value }}
+                          key={item.value}
+                        ></div>
+                      );
+                    })}
                   </div>
                 )}
               </p>
@@ -152,11 +199,11 @@ const ProductDetails = ({data, label, AddToCart}) => {
                 &#8377; {data.price}
               </p>
               <button
-                  className={`btn ${label ? "btn-primary" : "btn-success"}`}
-                  onClick={AddToCart}
-                >
-                  {label ? "Add to Cart" : "Remove"}
-                </button>
+                className={`btn ${label ? "btn-primary" : "btn-success"}`}
+                onClick={AddToCart}
+              >
+                {label ? "Add to Cart" : "Remove"}
+              </button>
             </div>
           </div>
         </div>
@@ -187,25 +234,24 @@ const Rating = ({ reviews }) => {
   );
 };
 
-const TypeTag = ({type}) => {
-  if(type === "newArrival"){
-    return(
+const TypeTag = ({ type }) => {
+  if (type === "newArrival") {
+    return (
       <div className="badge bg-green-600 text-white gap-2 px-2 py-3 m-3 top-4 left-4 rounded-full">
-      New Arrival
-    </div>
-    )}
-    else if(type === "trending"){
-    return(
+        New Arrival
+      </div>
+    );
+  } else if (type === "trending") {
+    return (
       <div className="badge bg-red-600 text-white px-2 py-3 gap-2 m-3 top-4 left-4 rounded-full">
-      Trending
-    </div>
-    )
-  }
-    else if(type === "popular"){
-    return(
+        Trending
+      </div>
+    );
+  } else if (type === "popular") {
+    return (
       <div className="badge bg-yellow-500 rounded-full gap-2 px-2 py-3 m-3 top-4 left-4">
-      Popular
-    </div>
-    )
+        Popular
+      </div>
+    );
   }
-}
+};

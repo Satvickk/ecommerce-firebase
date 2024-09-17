@@ -81,7 +81,7 @@ export default function Home() {
       <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content layout-desktop-container">
         <Header />
-        <div className="layout-desktop-item-grow">
+        <div className="layout-desktop-item-grow overflow-hidden">
           <Banner />
           <CardStack />
           <Brands />

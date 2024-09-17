@@ -39,7 +39,7 @@ export default function ProductView() {
           Products
         </h1>
         <button
-          className="btn btn-info"
+          className="btn btn-info rounded-md text-white font-bold"
           onClick={() => document.getElementById("add-modal").showModal()}
         >
           Add +
@@ -63,6 +63,7 @@ export default function ProductView() {
         <table className="table w-full">
           <thead>
             <tr className="bg-black text-white">
+              <th></th>
               <th>Product</th>
               <th>Price (&#8377;)</th>
               <th>Product Type</th>
