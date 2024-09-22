@@ -14,7 +14,7 @@ export const AllProductSlice = createSlice({
       state.totalDoc = action.payload.totalDoc;
     },
     addSingleProductDetails: (state, action) => {
-      state.content = [...state.content, action.payload]; // Use spread to add new product
+      state.content = [action.payload, ...state.content]; // Use spread to add new product
       state.totalDoc += 1; // Increase totalDoc count
     },
     updateSingleProductDetails: (state, action) => {
