@@ -91,9 +91,11 @@ export const AdminOrderRow = ({ data }) => {
         <td>{data.deliveryCancelledDate ? data.deliveryCancelledDate : "-"}</td>
         <td>₹ {data.orderDetails.totalCost}</td>
         <th>
+
+        
           <LoadingButton
             isLoading={loading}
-            className="btn btn-ghost btn-sm bg-green-600 text-white text-nowrap"
+            className={`btn btn-sm text-white text-nowrap ${(data.deliveryStatus === 2 || data.deliveryStatus === 5 ) ? ' bg-green-600 btn-ghost' : 'bg-gray-400 btn-disabled'}`}
             onClick={() => openModal(1)} // Example: 1 for Delivered, you can change this
           >
             Update Status

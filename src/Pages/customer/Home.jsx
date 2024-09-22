@@ -37,7 +37,7 @@ export default function Home() {
           );
         } catch (error) {
           console.log("error:", error);
-          toast.error("Unable to fetch product details");
+          // toast.error("Unable to fetch product details");
         }
       };
 
@@ -56,14 +56,14 @@ export default function Home() {
           dispatch(
             setCheckoutProducts({
               selectedProducts: [...CheckoutData?.selectedProducts || []],
-              totalCost: CheckoutData?.totalCost,
-              checkoutDocId: CheckoutData?.checkoutDocId,
+              totalCost: CheckoutData.totalCost ? CheckoutData.totalCost : 0,
+              checkoutDocId: CheckoutData.checkoutDocId ? CheckoutData.checkoutDocId : "",
             })
           );
           dispatch(
             setProductToCart({
               selectedProducts: [...CheckoutData?.selectedProducts || []],
-              totalCost:Checkout?. totalCost,
+              totalCost: CheckoutData.totalCost ? CheckoutData.totalCost : 0,
             })
           );
         } catch (error) {

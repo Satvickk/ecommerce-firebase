@@ -10,7 +10,7 @@ export class Service {
   //   deliveryStatus - [
 //     1 - Delivered,
 //     2 - Pending,
-//     3 - Cencelled,
+//     3 - Cancelled,
 //     4 - Not Delivered
 //     5 - Delivery Schedule
 // ]

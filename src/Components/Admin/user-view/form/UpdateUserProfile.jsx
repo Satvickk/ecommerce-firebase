@@ -47,7 +47,7 @@ export default function UpdateUserProfile({ userData, onClose }) {
       });
       if (resp) {
         toast.success("User Profile updated successfully");
-        dispatch(updateSingleUserDetails({ ...values, docId: userData.docId }));
+        dispatch(updateSingleUserDetails({ ...values, docId: userData.docId,  email: userData?.email, password: userData?.password,  }));
         onClose();
       }
     } catch (error) {

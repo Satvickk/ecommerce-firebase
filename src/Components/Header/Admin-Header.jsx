@@ -28,7 +28,7 @@ export default function AdminHeader() {
           className="btn border-2 border-red-600 text-red-600 bg-transparent hover:bg-red-600 hover:text-black"
           onClick={handleLogout}
         >
-          Logout
+          Back to Home
         </button>
       </div>
     </div>

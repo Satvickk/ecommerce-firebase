@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import USER_SERVICE from "../../Firebase/userService";
 import { updateUserDetails } from "../../redux/userDetailSlice";
 
-export default function UpdateProfile({ handleClose }) {
+export default function UpdateProfile({ handleClose, isClose=true }) {
   const userData = useSelector((state) => state?.UserDetails);
 
   const initialValues = {
@@ -37,7 +37,7 @@ export default function UpdateProfile({ handleClose }) {
         ...values,
       });
       if (resp) {
-        toast.success("Profile updated successfully");
+        if(isClose) toast.success("Profile updated successfully");
         dispatch(updateUserDetails({ ...values }));
         if(handleClose) handleClose()
       }

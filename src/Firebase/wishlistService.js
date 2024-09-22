@@ -7,7 +7,7 @@ export class Service {
     this.collectionName = 'Wishlist';
   }
 
-  async createWishList({customerId}) {
+  async createWishList(customerId) {
     try {
       const docRef = await addDoc(collection(this.db, this.collectionName), {
         customerId,

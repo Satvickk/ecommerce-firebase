@@ -18,15 +18,15 @@ export default function CartCard({ data }) {
   }
 
   const RemoveFromCart = () => {
-      // console.log("remove", data);
-      dispatch(removeProductFromCart({ ...data }));
-      toast.warning("Removed from Cart");
+    // console.log("remove", data);
+    dispatch(removeProductFromCart({ ...data }));
+    toast.warning("Removed from Cart");
   };
 
   return (
     <div className="card card-side bg-base-100 shadow-xl flex-col sm:flex-row items-center">
       <button
-        className="btn sm:btn-sm btn-circle btn-ghost absolute right-2 top-2 z-50"
+        className="hidden sm:block btn sm:btn-sm btn-circle btn-ghost absolute right-2 top-2 z-50"
         onClick={RemoveFromCart}
       >
         ✕
@@ -40,7 +40,7 @@ export default function CartCard({ data }) {
         <p className="text-start font-bold text-gray-700 text-lg">
           &#8377; {data?.price}
         </p>
-        <div className="card-actions justify-center sm:justify-end">
+        <div className="card-actions justify-center sm:justify-end gap-20 sm:gap-0 mt-6">
           <div className="join">
             <button
               className={`btn join-item rounded-l-full ${
@@ -68,8 +68,17 @@ export default function CartCard({ data }) {
               +{" "}
             </button>
           </div>
+          <button
+            className="sm:hidden block btn btn-primary"
+            onClick={RemoveFromCart}
+          >
+            Remove
+          </button>
         </div>
       </div>
+      <p className="text-xs absolute bottom-2 right-2">
+        maximun quantity for each product is 5
+      </p>
     </div>
   );
 }

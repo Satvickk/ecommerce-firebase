@@ -164,7 +164,6 @@ export class ProductService {
   }
 
   async getProducts() {
-    console.log("products");
     try {
       const querySnapshot = await getDocs(
         collection(this.db, this.collectionName)
