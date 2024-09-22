@@ -71,8 +71,6 @@ export default function ProductFormModal({ editData, onClose }) {
               docId: product.id,
             };
 
-
-
             dispatch(addSingleProductDetails({ ...storeData }));
             onClose();
             toast.success("Product added successfully");
