@@ -54,6 +54,7 @@ export default function ProductRow({ responseData }) {
   return (
     <>
       <tr className="bg-white">
+
         <td>
           <div className="flex items-center gap-3 mb-2">
             <div className="avatar">
@@ -63,9 +64,13 @@ export default function ProductRow({ responseData }) {
             </div>
           </div>
         </td>
+
         <td>{responseData?.title}</td>
+
         <td>₹ {responseData?.price}</td>
+
         <td>{responseData?.productType}</td>
+
         {responseData?.status === 1 ? (
           <td className="badge text-green-500 gap-2">Available</td>
         ) : responseData?.status === 2 ? (
@@ -73,7 +78,9 @@ export default function ProductRow({ responseData }) {
         ) : (
           <td className="badge text-blue-500 gap-2">Coming Soon</td>
         )}
+
         <td>{responseData?.review}</td>
+
         <td className="flex gap-3">
           <button className="btn btn-success rounded-md text-white font-bold" onClick={handleUpdateClick}>
             Edit
@@ -82,6 +89,7 @@ export default function ProductRow({ responseData }) {
             Delete
           </button>
         </td>
+        
       </tr>
 
       {/* Update Modal */}

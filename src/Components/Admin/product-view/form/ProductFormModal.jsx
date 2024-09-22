@@ -38,7 +38,6 @@ export default function ProductFormModal({ editData, onClose }) {
 
     try {
       if (isEdit.current) {
-        console.log("Updating product:", data);
 
         try {
           if (data.featuredImage instanceof File) {
@@ -55,19 +54,15 @@ export default function ProductFormModal({ editData, onClose }) {
           toast.error("Something went wrong!");
         }
       } else {
-        console.log("Adding new product:", data);
 
         try {
           const resp = await PRODUCT_SERVICE.uploadFile(data.featuredImage);
-          console.log('respuploading image', resp)
           if (resp) {
             const product = await PRODUCT_SERVICE.createProduct({
               ...data,
               featuredImage: resp.downloadURL,
               fileId: resp.fileId,
             });
-
-            console.log('product uploaded resp', product)
 
             const storeData = {
               ...data,
@@ -76,9 +71,6 @@ export default function ProductFormModal({ editData, onClose }) {
               docId: product.id,
             };
 
-
-            console.log('storeData dispatched resp', storeData)
-
             dispatch(addSingleProductDetails({ ...storeData }));
             onClose();
             toast.success("Product added successfully");
@@ -86,7 +78,6 @@ export default function ProductFormModal({ editData, onClose }) {
             const response = await PRODUCT_SERVICE.createProductInStripe(storeData);
             dispatch(updateSingleProductDetails({ ...response }));
 
-            console.log("uploading to stripe:", response)
           }
         } catch (error) {
           console.error("Error in creating product:", error);

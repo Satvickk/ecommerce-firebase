@@ -73,6 +73,12 @@ export default function ProductCard({ data, index }) {
     setLabel(true);
   };
 
+  function handleDescriptionLength(value){
+    let newDescription = value.slice(0, 81)
+
+    return newDescription + '...'
+  }
+
   return (
     <>
       <div className="relative card card-compact bg-base-100 w-80 sm:w-96 shadow-xl">
@@ -110,7 +116,7 @@ export default function ProductCard({ data, index }) {
         </figure>
         <div className="card-body">
           <h2 className="card-title">{data?.title}</h2>
-          <p className="text-start">{data?.description}</p>
+          <p className="text-start">{data?.description?.length > 80 ? handleDescriptionLength(data?.description) : data?.description}</p>
 
           <div className="text-start flex items-center gap-2">
             <Rating reviews={data?.review} />({data?.review})
@@ -227,6 +233,12 @@ const TypeTag = ({ type }) => {
     return (
       <div className="badge bg-yellow-500 rounded-full gap-2 px-2 py-3 m-3 top-4 left-4">
         Popular
+      </div>
+    );
+  } else {
+    return (
+      <div className="badge bg-white border-black rounded-full gap-2 px-2 py-3 m-3 top-4 left-4">
+        Regular
       </div>
     );
   }
