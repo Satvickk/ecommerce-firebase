@@ -59,12 +59,15 @@ export default function ProductFormModal({ editData, onClose }) {
 
         try {
           const resp = await PRODUCT_SERVICE.uploadFile(data.featuredImage);
+          console.log('respuploading image', resp)
           if (resp) {
             const product = await PRODUCT_SERVICE.createProduct({
               ...data,
               featuredImage: resp.downloadURL,
               fileId: resp.fileId,
             });
+
+            console.log('product uploaded resp', product)
 
             const storeData = {
               ...data,
@@ -73,12 +76,17 @@ export default function ProductFormModal({ editData, onClose }) {
               docId: product.id,
             };
 
+
+            console.log('storeData dispatched resp', storeData)
+
             dispatch(addSingleProductDetails({ ...storeData }));
             onClose();
             toast.success("Product added successfully");
             // Add data to Stripe Dashboard
-            const resp = await PRODUCT_SERVICE.createProductInStripe(storeData);
-            dispatch(addSingleProductDetails({ ...resp }));
+            const response = await PRODUCT_SERVICE.createProductInStripe(storeData);
+            dispatch(updateSingleProductDetails({ ...response }));
+
+            console.log("uploading to stripe:", response)
           }
         } catch (error) {
           console.error("Error in creating product:", error);
