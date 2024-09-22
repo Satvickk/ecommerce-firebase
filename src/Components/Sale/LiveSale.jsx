@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 export default function LiveSale() {
   const calculateTimeLeft = () => {
-    const difference = +new Date("2024-07-31T00:00:00") - +new Date();
+    const difference = +new Date("2024-09-31T00:00:00") - +new Date();
     let timeLeft = {};
 
     if (difference > 0) {

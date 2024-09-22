@@ -35,12 +35,16 @@ export default function SignUpForm() {
         password,
       });
 
+      console.log('resp', resp)
+      console.log('resp.uid', resp.uid)
+
       if (resp?.uid) {
         await USER_SERVICE.createUser({
           ...values,
           userId: resp.uid,
         });
-        const resp = await WISHLIST_SERVICE.createWishList(resp.uid);
+        const response = await WISHLIST_SERVICE.createWishList(resp.uid);
+        console.log("response",response)
         dispatch(setWishlist({customerId: resp.uid, selectedProducts: [], totalDoc: 0}))
         toast.success("Signed In Successfully");
         reset();

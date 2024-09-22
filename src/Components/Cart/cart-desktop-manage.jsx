@@ -32,7 +32,7 @@ export default function CartDesktopManage() {
         dispatch(
           setCheckoutProducts({
             selectedProducts: [...selectedProducts],
-            totalCost: totalCost,
+            totalCost: totalCost ? totalCost : 0,
             checkoutDocId: checkout.id,
           })
         );

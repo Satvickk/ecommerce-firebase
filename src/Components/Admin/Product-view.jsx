@@ -33,7 +33,7 @@ export default function ProductView() {
   
 
   return (
-    <div className="text-center w-full flex justify-center items-center flex-col gap-8 p-2 sm:p-12 flex-grow overflow-x-scroll sm:h-auto relative sm:static">
+    <div className="text-center w-full min-h-screen flex justify-center items-center flex-col gap-8 p-2 sm:p-12 flex-grow overflow-x-scroll sm:h-auto relative sm:static">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full">
         <h1 className="divider divider-start hidden sm:block text-2xl sm:text-3xl font-normal">
           Products

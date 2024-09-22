@@ -8,7 +8,7 @@ import {
 } from "../../redux/userWishlist";
 import WISHLIST_SERVICE from "../../Firebase/wishlistService";
 
-export default function ProductCard({ data }) {
+export default function ProductCard({ data, index }) {
   const dispatch = useDispatch();
   const [label, setLabel] = useState(true);
   const [isWishlist, setIsWishlist] = useState(true);
@@ -22,14 +22,12 @@ export default function ProductCard({ data }) {
   }, [UserCart, data]);
 
   const handleOpenModal = () => {
-    document.getElementById("my_modal_3").showModal();
+    const modal = document.getElementById(`my_modal_${data.docId}`);
+    if (modal) modal.showModal();
   };
-
-  console.log(data)
 
   const handleIsWishlist = async () => {
     setIsWishlist(!isWishlist);
-    // if product is added/remove to/from wishlist
     try {
       if (isWishlist) {
         dispatch(addProductToWishlist({ ...data }));
@@ -47,11 +45,7 @@ export default function ProductCard({ data }) {
     } catch (error) {
       console.log("Error:: ", error);
       toast.error(
-        `${
-          isWishlist
-            ? "Unable to Add to Wishlist"
-            : "Unable to Remove from Wishlist"
-        }`
+        `${isWishlist ? "Unable to Add to Wishlist" : "Unable to Remove from Wishlist"}`
       );
     }
   };
@@ -63,22 +57,16 @@ export default function ProductCard({ data }) {
     }
     handleCartCheck();
     if (label) {
-      // true it means it is not added and we have to add it
-      // console.log("add", data);
       dispatch(addProductToCart({ ...data }));
       toast.success("Added to Cart");
     } else {
-      // false means it is added and we have to remove it
-      // console.log("remove", data);
       dispatch(removeProductFromCart({ ...data }));
       toast.warning("Removed from Cart");
     }
   };
 
   const handleCartCheck = () => {
-    if (
-      UserCart?.selectedProducts?.find((item) => item?.docId === data?.docId)
-    ) {
+    if (UserCart?.selectedProducts?.find((item) => item?.docId === data?.docId)) {
       setLabel(false);
       return;
     }
@@ -92,8 +80,7 @@ export default function ProductCard({ data }) {
           <label className="swap swap-rotate">
             <input
               type="checkbox"
-              value={isWishlist}
-              onChange={handleIsWishlist}
+              // onChange={handleIsWishlist}
             />
             <img
               src="/heart-empty.svg"
@@ -112,12 +99,6 @@ export default function ProductCard({ data }) {
             className="inline-block mr-2 h-6 w-6 cursor-pointer"
             onClick={handleOpenModal}
           />
-          {/* compare functionality */}
-          {/* <img
-            src="/exchange.svg"
-            alt="exchange"
-            className="inline-block mr-2 h-6 w-6"
-          /> */}
         </div>
         <TypeTag type={data?.productType} />
         <figure className="min-h-[213px] max-h-[260px] min-w-[320px] max-w-[384px] overflow-hidden bg-black">
@@ -148,14 +129,14 @@ export default function ProductCard({ data }) {
         </div>
       </div>
 
-      <ProductDetails data={data} label={label} AddToCart={AddToCart} />
+      <ProductDetails data={data} label={label} AddToCart={AddToCart} index={data.docId} />
     </>
   );
 }
 
-const ProductDetails = ({ data, label, AddToCart }) => {
+const ProductDetails = ({ data, label, AddToCart, index }) => {
   return (
-    <dialog id="my_modal_3" className="modal">
+    <dialog id={`my_modal_${index}`} className="modal">
       <div className="modal-box w-11/12 max-w-5xl">
         <form method="dialog">
           <button
@@ -169,7 +150,7 @@ const ProductDetails = ({ data, label, AddToCart }) => {
           <div className="hero-content flex-col lg:flex-row">
             <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl mt-3">
               <img
-                src={data.featureImage}
+                src={data.featuredImage}
                 alt={data.title || "product image"}
               />
             </div>
@@ -179,23 +160,20 @@ const ProductDetails = ({ data, label, AddToCart }) => {
               <p className="pt-2">
                 {data.color.length > 0 && (
                   <div className="flex gap-2">
-                    {data.color.map((item, index) => {
-                      // console.log(item.value)
-                      return (
-                        <div
-                          className="w-6 h-6 rounded-full border"
-                          style={{ backgroundColor: item.value }}
-                          key={item.value}
-                        ></div>
-                      );
-                    })}
+                    {data.color.map((item) => (
+                      <div
+                        className="w-6 h-6 rounded-full border"
+                        style={{ backgroundColor: item.value }}
+                        key={item.value}
+                      ></div>
+                    ))}
                   </div>
                 )}
               </p>
               <p className="py-2 text-sm text-start">
                 Customer reviews ({data.review})
               </p>
-              <p className="py-2 text-start font-bold text-gray-700 text-lg ">
+              <p className="py-2 text-start font-bold text-gray-700 text-lg">
                 &#8377; {data.price}
               </p>
               <button
@@ -224,9 +202,7 @@ const Rating = ({ reviews }) => {
             key={index}
             type="radio"
             name="rating-4"
-            className={`mask mask-star-2 ${
-              index < number ? "bg-black" : "bg-gray-300"
-            }`}
+            className={`mask mask-star-2 ${index < number ? "bg-black" : "bg-gray-300"}`}
             readOnly
           />
         ))}

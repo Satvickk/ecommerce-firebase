@@ -10,7 +10,7 @@ export const OrdersSlice = createSlice({
   initialState: initialState,
   reducers: {
     setOrdersDetails: (state, action) => {
-      state.content = action.payload;
+      state.content = [...action.payload];
       state.totalDoc = action.payload.length;
     },
     addOrderDetails: (state, action) => {
