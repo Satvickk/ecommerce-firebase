@@ -45,7 +45,11 @@ export default function ProductCard({ data, index }) {
     } catch (error) {
       console.log("Error:: ", error);
       toast.error(
-        `${isWishlist ? "Unable to Add to Wishlist" : "Unable to Remove from Wishlist"}`
+        `${
+          isWishlist
+            ? "Unable to Add to Wishlist"
+            : "Unable to Remove from Wishlist"
+        }`
       );
     }
   };
@@ -66,76 +70,101 @@ export default function ProductCard({ data, index }) {
   };
 
   const handleCartCheck = () => {
-    if (UserCart?.selectedProducts?.find((item) => item?.docId === data?.docId)) {
+    if (
+      UserCart?.selectedProducts?.find((item) => item?.docId === data?.docId)
+    ) {
       setLabel(false);
       return;
     }
     setLabel(true);
   };
 
-  function handleDescriptionLength(value){
-    let newDescription = value.slice(0, 81)
+  function handleDescriptionLength(value) {
+    let newDescription = value.slice(0, 81);
 
-    return newDescription + '...'
+    return newDescription + "...";
   }
 
   return (
     <>
       <div className="relative card card-compact bg-base-100 w-80 sm:w-96 shadow-xl">
-        <div className="absolute z-10 top-0 right-3 flex gap-4 px-3 py-2 rounded-xl">
-          <label className="swap swap-rotate">
-            <input
-              type="checkbox"
-              // onChange={handleIsWishlist}
-            />
-            <img
-              src="/heart-empty.svg"
-              alt="empty-heart"
-              className="inline-block mr-2 swap-off h-6 w-6 mix-blend-color"
-            />
-            <img
-              src="/heart-full.svg"
-              alt="full-heart"
-              className="inline-block mr-2 swap-on h-6 w-6 mix-blend-color "
-            />
-          </label>
-          <img
-            src="/expand-view.svg"
-            alt="view details"
-            className="inline-block mr-2 h-6 w-6 cursor-pointer"
-            onClick={handleOpenModal}
-          />
-        </div>
-        <TypeTag type={data?.productType} />
-        <figure className="min-h-[213px] max-h-[260px] min-w-[320px] max-w-[384px] overflow-hidden bg-black">
-          <img
-            src={data?.featuredImage}
-            alt={data?.title || "product image"}
-            className="object-cover bg-center"
-          />
-        </figure>
-        <div className="card-body">
-          <h2 className="card-title">{data?.title}</h2>
-          <p className="text-start">{data?.description?.length > 80 ? handleDescriptionLength(data?.description) : data?.description}</p>
+        {data.featuredImage ? (
+          <>
+            <div className="absolute z-10 top-0 right-3 flex gap-4 px-3 py-2 rounded-xl">
+              <label className="swap swap-rotate">
+                <input
+                  type="checkbox"
+                  // onChange={handleIsWishlist}
+                />
+                <img
+                  src="/heart-empty.svg"
+                  alt="empty-heart"
+                  className="inline-block mr-2 swap-off h-6 w-6 mix-blend-color"
+                />
+                <img
+                  src="/heart-full.svg"
+                  alt="full-heart"
+                  className="inline-block mr-2 swap-on h-6 w-6 mix-blend-color "
+                />
+              </label>
+              <img
+                src="/expand-view.svg"
+                alt="view details"
+                className="inline-block mr-2 h-6 w-6 cursor-pointer"
+                onClick={handleOpenModal}
+              />
+            </div>
+            <TypeTag type={data?.productType} />
+            <figure className="min-h-[213px] max-h-[260px] min-w-[320px] max-w-[384px] overflow-hidden bg-black">
+              <img
+                src={data?.featuredImage}
+                alt={data?.title || "product image"}
+                className="object-cover bg-center"
+                loading="lazy"
+              />
+            </figure>
+            <div className="card-body">
+              <h2 className="card-title">{data?.title}</h2>
+              <p className="text-start">
+                {data?.description?.length > 80
+                  ? handleDescriptionLength(data?.description)
+                  : data?.description}
+              </p>
 
-          <div className="text-start flex items-center gap-2">
-            <Rating reviews={data?.review} />({data?.review})
+              <div className="text-start flex items-center gap-2">
+                <Rating reviews={data?.review} />({data?.review})
+              </div>
+              <p className="text-start font-bold text-gray-700 text-lg">
+                &#8377; {data?.price}
+              </p>
+              <div className="card-actions justify-end">
+                <button
+                  className={`btn ${label ? "btn-primary" : "btn-success"}`}
+                  onClick={AddToCart}
+                >
+                  {label ? "Add to Cart" : "Remove"}
+                </button>
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="flex w-full px-3 py-2 flex-col gap-4">
+            <div className="skeleton h-4 w-1/2"></div>
+            <div className="skeleton h-52 w-full"></div>
+            <div className="skeleton h-4 w-28"></div>
+            <div className="skeleton h-4 w-full"></div>
+            <div className="skeleton h-4 w-full"></div>
+            <div className="skeleton h-4 w-full"></div>
           </div>
-          <p className="text-start font-bold text-gray-700 text-lg">
-            &#8377; {data?.price}
-          </p>
-          <div className="card-actions justify-end">
-            <button
-              className={`btn ${label ? "btn-primary" : "btn-success"}`}
-              onClick={AddToCart}
-            >
-              {label ? "Add to Cart" : "Remove"}
-            </button>
-          </div>
-        </div>
+        )}
       </div>
 
-      <ProductDetails data={data} label={label} AddToCart={AddToCart} index={data.docId} />
+      <ProductDetails
+        data={data}
+        label={label}
+        AddToCart={AddToCart}
+        index={data.docId}
+      />
     </>
   );
 }
@@ -208,7 +237,9 @@ const Rating = ({ reviews }) => {
             key={index}
             type="radio"
             name="rating-4"
-            className={`mask mask-star-2 ${index < number ? "bg-black" : "bg-gray-300"}`}
+            className={`mask mask-star-2 ${
+              index < number ? "bg-black" : "bg-gray-300"
+            }`}
             readOnly
           />
         ))}

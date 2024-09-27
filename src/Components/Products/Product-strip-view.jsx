@@ -59,11 +59,11 @@ export default function ProductCard({ data }) {
         <div className="card-body p-0 sm:p-6">
           <div className="hero">
             <div className="hero-content flex-col sm:flex-row">
-              <div className="card bg-base-100 shadow-2xl w-full sm:w-1/2">
+              <div className="card bg-base-100 shadow-2xl w-full sm:w-1/2 max-h-96 overflow-clip flex justify-center items-center">
                 <img
                   src={data.featuredImage}
                   alt="headphones"
-                  className="w-full h-auto"
+                  className="w-full h-auto object-cover bg-center"
                 />
               </div>
               <div className="text-center sm:text-left w-full sm:w-1/2 mt-4 sm:mt-0 sm:ml-4">
