@@ -11,7 +11,7 @@ export default function CartLayout() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const UserCart = useSelector((state) => state.UserCart);
-  const CheckoutDetails = useSelector((state) => state.checkout);
+  const CheckoutDetails = useSelector((state) => state.Checkout);
   
   const [loading, setLoading] = useState(false);
 

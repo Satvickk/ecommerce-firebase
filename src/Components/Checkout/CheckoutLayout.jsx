@@ -26,20 +26,22 @@ export default function CheckoutLayout() {
     const getCheckout = async () => {
       try {
         const CheckoutData = await CHECKOUT_SERVICE.getCheckout();
-        const { selectedProducts, totalCost, checkoutDocId } = CheckoutData;
-        dispatch(
-          setCheckoutProducts({
-            selectedProducts: [...selectedProducts],
-            totalCost: totalCost,
-            checkoutDocId: checkoutDocId,
-          })
-        );
-        dispatch(
-          setProductToCart({
-            selectedProducts: [...selectedProducts],
-            totalCost: totalCost,
-          })
-        );
+        if (CheckoutData) {
+          const { selectedProducts, totalCost, checkoutDocId } = CheckoutData;
+          dispatch(
+            setCheckoutProducts({
+              selectedProducts: [...(selectedProducts || [])],
+              totalCost: totalCost || 0,
+              checkoutDocId: checkoutDocId,
+            })
+          );
+          dispatch(
+            setProductToCart({
+              selectedProducts: [...(selectedProducts || [])],
+              totalCost: totalCost || 0,
+            })
+          );
+        }
       } catch (error) {
         console.log("error:", error);
         toast.error("Unable to fetch Cart Products");
@@ -49,7 +51,7 @@ export default function CheckoutLayout() {
     if (Checkout.selectedProducts.length <= 0) {
       getCheckout();
     }
-  }, [Checkout]);
+  }, [Checkout.selectedProducts.length, dispatch]);
 
   const handleOrder = () => {
     navigate("/payment");

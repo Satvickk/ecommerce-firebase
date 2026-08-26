@@ -7,14 +7,13 @@ export class Service {
     this.collectionName = 'Users';
   }
 
-  async createUser({ name, email, address, contact, password, pincode, userId }) {
+  async createUser({ name, email, address, contact, pincode, userId }) {
     try {
       const docRef = await addDoc(collection(this.db, this.collectionName), {
         name,
         email,
         address,
         contact,
-        password,
         pincode,
         userId,
         // user Role 1 = customer

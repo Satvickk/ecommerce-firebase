@@ -20,6 +20,7 @@ export default function Products() {
         if (resp) {
           dispatch(
             setWishlist({
+              customerId: resp?.customerId || id || Auth?.userId || "",
               selectedProducts: resp?.selectedProducts || [],
               totalDoc: resp?.selectedProducts?.length || 0,
               wishlistDocId: resp?.wishlistDocId || "",
@@ -32,10 +33,10 @@ export default function Products() {
       }
     }
 
-    if (Wishlist.totalDoc <= 0) {
+    if (Auth?.userId && Wishlist.totalDoc <= 0) {
       getCustomerWishlist(Auth?.userId);
     }
-  }, []);
+  }, [Auth?.userId, Wishlist.totalDoc, dispatch]);
 
   return (
     <div className="text-center w-full flex justify-center items-center flex-col my-8 gap-8 p-12">

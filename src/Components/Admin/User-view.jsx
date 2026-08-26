@@ -47,7 +47,7 @@ export default function UserView() {
             </tr>
           </thead>
           <tbody>
-            {AllUsers?.content.map((item) => (
+            {AllUsers?.content?.map((item) => (
               <UserRow key={item.docId} responseData={item} />
             ))}
           </tbody>

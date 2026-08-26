@@ -23,10 +23,10 @@ export default function OrderLayout() {
       }
     }; 
 
-    // if (!Orders.totalDoc <= 0) {
+    if (UserDetails?.userId) {
       fetchOrdersDetails();
-    // }
-  }, [UserDetails]);
+    }
+  }, [UserDetails?.userId, dispatch]);
 
   return (
     <div className="text-center w-full flex justify-center items-center flex-col my-8 gap-8 p-2 sm:p-12 ">
@@ -48,7 +48,7 @@ export default function OrderLayout() {
               </tr>
             </thead>
             <tbody>
-              {Orders?.content.map((item,index) =>(
+              {Orders?.content?.map((item,index) =>(
                 <OrderRow
                 key={index}
                 data={item}
@@ -58,7 +58,9 @@ export default function OrderLayout() {
             {/* foot */}
             <tfoot>
               <tr className="font-light my-3">
-                ℹ️ for any concern related to your orders please contact us
+                <td colSpan={8}>
+                  ℹ️ for any concern related to your orders please contact us
+                </td>
               </tr>
             </tfoot>
           </table>

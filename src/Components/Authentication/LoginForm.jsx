@@ -26,14 +26,17 @@ export default function LoginForm() {
         window.localStorage.setItem("authToken", resp.accessToken);
         const { uid, displayName, email } = resp;
         dispatch(setAuth({ userId: uid, userName: displayName, userEmail: email, isLogged: true }));
-        toast.success(`Welcome back ${displayName.split(" ")[0]}`);
+        const firstName = displayName?.split(" ")?.[0] || "User";
+        toast.success(`Welcome back ${firstName}`);
         
         // console.log("running getting user details")
         const UserData = await USER_SERVICE.getUserById(uid);
         // console.log("running getting user details", UserData)
-        window.localStorage.setItem("role", UserData.userRole);
+        if (UserData?.userRole) {
+          window.localStorage.setItem("role", UserData.userRole);
+        }
         dispatch(setUserDetails(UserData));
-          navigate("/")
+        navigate("/")
         reset();
       }
     } catch (error) {

@@ -61,7 +61,7 @@ export class Service {
 
   async getUserWishlist(id) {
     try {
-      const q = query(collection(this.db, this.collectionName), where("userId", "==", id));
+      const q = query(collection(this.db, this.collectionName), where("customerId", "==", id));
       const querySnapshot = await getDocs(q);
       let Wishlist = [];
       querySnapshot.forEach((doc) => {

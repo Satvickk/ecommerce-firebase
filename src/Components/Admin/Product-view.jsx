@@ -26,10 +26,10 @@ export default function ProductView() {
       }
     };
 
-    if (!AllProductsDetails.content.length > 0) {
+    if (!AllProductsDetails?.content?.length) {
       getAllProductsDetails();
     }
-  }, []);
+  }, [AllProductsDetails?.content?.length, dispatch]);
   
 
   return (

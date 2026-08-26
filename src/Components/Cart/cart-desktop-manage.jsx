@@ -11,7 +11,7 @@ export default function CartDesktopManage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const UserCart = useSelector((state) => state.UserCart);
-  const CheckoutDetails = useSelector((state) => state.checkout)
+  const CheckoutDetails = useSelector((state) => state.Checkout);
 
   const [loading, setLoading] = useState(false);
 
@@ -20,7 +20,7 @@ export default function CartDesktopManage() {
     try {
       if(CheckoutDetails?.checkoutDocId){
         const { checkoutDocId } = CheckoutDetails;
-        CHECKOUT_SERVICE.deleteCheckout(checkoutDocId)
+        await CHECKOUT_SERVICE.deleteCheckout(checkoutDocId);
       }
       // console.log("Adding new product:", UserCart);
       const { selectedProducts, totalCost } = UserCart;

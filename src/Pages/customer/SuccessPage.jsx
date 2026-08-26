@@ -4,7 +4,7 @@ import PaymentSuccessPage from "../../Components/Special/PaymentSuccessPage";
 import { useDispatch, useSelector } from "react-redux";
 import CHECKOUT_SERVICE from "../../Firebase/checkoutService";
 import ORDER_SERVICE from "../../Firebase/orderService";
-import { setOrdersDetails } from "../../redux/orderSlice";
+import { addOrderDetails, setOrdersDetails } from "../../redux/orderSlice";
 import { setCheckoutProducts } from "../../redux/checkoutSlice";
 import { toast } from "react-toastify";
 
@@ -17,14 +17,16 @@ export default function SuccessPage() {
     const getCheckout = async () => {
       try {
         const CheckoutData = await CHECKOUT_SERVICE.getCheckout();
-        const { selectedProducts, totalCost, checkoutDocId } = CheckoutData;
-        dispatch(
-          setCheckoutProducts({
-            selectedProducts: [...selectedProducts],
-            totalCost: totalCost,
-            checkoutDocId: checkoutDocId,
-          })
-        );
+        if (CheckoutData) {
+          const { selectedProducts, totalCost, checkoutDocId } = CheckoutData;
+          dispatch(
+            setCheckoutProducts({
+              selectedProducts: [...(selectedProducts || [])],
+              totalCost: totalCost || 0,
+              checkoutDocId: checkoutDocId,
+            })
+          );
+        }
       } catch (error) {
         console.log("error:", error);
         toast.error("Unable to fetch Cart Products");
@@ -51,9 +53,11 @@ export default function SuccessPage() {
           userId: User?.userId
         };
         await ORDER_SERVICE.createOrder({ ...payload });
-        dispatch(setOrdersDetails(payload));
+        dispatch(addOrderDetails(payload));
 
-        await CHECKOUT_SERVICE.deleteCheckout(Checkout?.checkoutDocId);
+        if (Checkout?.checkoutDocId) {
+          await CHECKOUT_SERVICE.deleteCheckout(Checkout?.checkoutDocId);
+        }
       } catch (error) {
         console.error("Error in creating order:", error);
       }

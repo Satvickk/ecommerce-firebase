@@ -27,26 +27,32 @@ export default function ProductCard({ data, index }) {
   };
 
   const handleIsWishlist = async () => {
-    setIsWishlist(!isWishlist);
+    const willAdd = !isWishlist;
+    setIsWishlist(willAdd);
     try {
-      if (isWishlist) {
+      let updatedProducts = [];
+      if (willAdd) {
         dispatch(addProductToWishlist({ ...data }));
+        updatedProducts = [...Wishlist.selectedProducts, data];
       } else {
         dispatch(removeProductFromWishlist({ ...data }));
+        updatedProducts = Wishlist.selectedProducts.filter((item) => (item.docId || item.id) !== (data.docId || data.id));
       }
-      const result = await WISHLIST_SERVICE.updateWishlist(data.WishListDocId, {
-        ...Wishlist.selectedProducts,
-      });
-      if (result) {
-        toast.success(
-          `${isWishlist ? "Added to Wishlist" : "Removed from Wishlist"}`
-        );
+      if (Wishlist.wishlistDocId) {
+        const result = await WISHLIST_SERVICE.updateWishlist(Wishlist.wishlistDocId, {
+          selectedProducts: updatedProducts,
+        });
+        if (result) {
+          toast.success(
+            `${willAdd ? "Added to Wishlist" : "Removed from Wishlist"}`
+          );
+        }
       }
     } catch (error) {
       console.log("Error:: ", error);
       toast.error(
         `${
-          isWishlist
+          willAdd
             ? "Unable to Add to Wishlist"
             : "Unable to Remove from Wishlist"
         }`
@@ -94,7 +100,8 @@ export default function ProductCard({ data, index }) {
               <label className="swap swap-rotate">
                 <input
                   type="checkbox"
-                  // onChange={handleIsWishlist}
+                  checked={isWishlist}
+                  onChange={handleIsWishlist}
                 />
                 <img
                   src="/heart-empty.svg"
@@ -193,7 +200,7 @@ const ProductDetails = ({ data, label, AddToCart, index }) => {
               <h1 className="text-5xl font-bold">{data.title}</h1>
               <p className="pt-6 text-start">{data.description}</p>
               <p className="pt-2">
-                {data.color.length > 0 && (
+                {data?.color?.length > 0 && (
                   <div className="flex gap-2">
                     {data.color.map((item) => (
                       <div

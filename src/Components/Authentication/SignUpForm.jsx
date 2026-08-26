@@ -98,7 +98,7 @@ export default function SignUpForm() {
                 <span className="label-text">House Address</span>
               </label>
               <input
-                type="address "
+                type="text"
                 placeholder="House Address"
                 className="input input-bordered"
                 {...register("address")}

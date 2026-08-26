@@ -23,6 +23,24 @@ export const CheckoutSlice = createSlice({
       state.totalCost += action.payload.price;
     },
     
+    // payload - product docId, and price
+    increaseProductQuantity: (state, action) => {
+      const itemToIncrease = state.selectedProducts.find((item) => item.docId === action.payload.docId);
+      if (itemToIncrease) {
+        itemToIncrease.quantity += 1;
+        state.totalCost += action.payload.price;
+      }
+    },
+    
+    // payload - product docId, and price
+    decreaseProductQuantity: (state, action) => {
+      const itemToDecrease = state.selectedProducts.find((item) => item.docId === action.payload.docId);
+      if (itemToDecrease && itemToDecrease.quantity > 1) {
+        itemToDecrease.quantity -= 1;
+        state.totalCost -= action.payload.price;
+      }
+    },
+
      // payload - product data
     removeProductFromCheckout: (state, action) => {
       const productToRemove = state.selectedProducts.find(item => item.docId === action.payload.docId);
@@ -34,8 +52,8 @@ export const CheckoutSlice = createSlice({
       );
     },
     
-    // Reset the cart
-    resetProductCheckout: (state) => {
+    // Reset the checkout
+    resetProductCheckout: () => {
       return initialCheckoutState;
     },
   }

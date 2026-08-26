@@ -33,12 +33,11 @@ export const UserCartSlice = createSlice({
     
      // payload - product docId, and price
     decreaseProductQuantity: (state, action) => {
-      state.selectedProducts = state.selectedProducts.map((item) => 
-        item.docId === action.payload.docId && item.quantity > 1
-        ? { ...item, quantity: item.quantity - 1 } 
-        : item
-      );
-      state.totalCost -= action.payload.price;
+      const itemToDecrease = state.selectedProducts.find((item) => item.docId === action.payload.docId);
+      if (itemToDecrease && itemToDecrease.quantity > 1) {
+        itemToDecrease.quantity -= 1;
+        state.totalCost -= action.payload.price;
+      }
     },
     
      // payload - product data
@@ -53,7 +52,7 @@ export const UserCartSlice = createSlice({
     },
     
     // Reset the cart
-    resetProductCart: (state) => {
+    resetProductCart: () => {
       return initialCartState;
     },
   }

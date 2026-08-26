@@ -77,7 +77,8 @@ function App() {
 
   useEffect(() => {
     // Close the drawer on navigation
-    document.getElementById("my-drawer-4").checked = false;
+    const drawer = document.getElementById("my-drawer-4");
+    if (drawer) drawer.checked = false;
   }, [location]);
 
   useEffect(() => {
@@ -146,8 +147,8 @@ function App() {
           {(Auth?.isLogged
             ? PHONE_MENU_DATA.filter((item) => item.loggedIn === true)
             : PHONE_MENU_DATA.filter((item) => item.loggedIn === false)
-          ).map((item) => (
-            <li key={item.label}>
+          ).map((item, index) => (
+            <li key={`${item.label}-${item.link}-${index}`}>
               <NavLink
                 to={item.link}
                 className={({ isActive }) =>

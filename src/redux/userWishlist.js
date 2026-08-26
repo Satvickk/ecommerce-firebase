@@ -18,12 +18,10 @@ export const WishlistSlice = createSlice({
         addProductToWishlist: (state, action) => {
             state.selectedProducts = [action.payload, ...state.selectedProducts]
             state.totalDoc = state.totalDoc + 1
-            return true
         },
         removeProductFromWishlist: (state, action) => {
-            state.selectedProducts = state.selectedProducts.filter((item) => item.id !== action.payload.id)
-            state.totalDoc = state.totalDoc - 1
-            return true
+            state.selectedProducts = state.selectedProducts.filter((item) => (item.docId || item.id) !== (action.payload.docId || action.payload.id))
+            state.totalDoc = Math.max(0, state.totalDoc - 1)
         },
         emptyWishlist : (state) => {
             state.selectedProducts = []
