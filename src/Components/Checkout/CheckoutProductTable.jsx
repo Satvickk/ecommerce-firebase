@@ -1,0 +1,7 @@
+export default function CheckoutProductTable({ CheckoutData }) {
+  return <div className="w-full overflow-x-auto border-2 border-black bg-white my-4"><table className="w-full text-left border-collapse text-xs uppercase font-bold"><thead><tr className="bg-black text-white border-b-2 border-black"><th className="p-4">PRODUCT SPECIFICATION</th><th className="p-4 text-center">QUANTITY</th><th className="p-4 text-right">UNIT PRICE</th></tr></thead><tbody>{CheckoutData?.selectedProducts?.length > 0 && CheckoutData.selectedProducts.map((item, index) => <tr key={item.docId || index} className="border-b border-black last:border-b-0 hover:bg-swiss-muted"><td className="p-4"><div className="flex items-center gap-3"><div className="w-10 h-10 border border-black bg-white p-1 flex items-center justify-center shrink-0"><img
+    src={item.featuredImage}
+    alt={item.title || "Product"}
+    className="max-h-full object-contain"
+  /></div><span className="font-black text-black">{item.title}</span></div></td><td className="p-4 text-center font-black text-black">{item.quantity}</td><td className="p-4 text-right font-black text-black">₹ {item.price}</td></tr>)}</tbody><tfoot><tr className="bg-swiss-muted border-t-2 border-black text-black font-black"><td colSpan={2} className="p-4 uppercase tracking-widest text-right">TOTAL AMOUNT:</td><td className="p-4 text-right text-base text-swiss-accent">₹ {CheckoutData.totalCost}</td></tr></tfoot></table></div>;
+}
