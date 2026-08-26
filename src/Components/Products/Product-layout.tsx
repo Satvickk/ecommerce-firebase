@@ -1,54 +1,70 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import ProductStripView from "./Product-strip-view";
 import PRODUCT_SERVICE from "../../Firebase/productService";
 import { setAllProductDetails } from "../../redux/productSlice";
 import { toast } from "react-toastify";
-import ComingSoon from "../common/ComingSoon";
+import FilterBox from "./FilterBox";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { Product } from "../../types";
 
 export default function ProductLayout() {
   const dispatch = useAppDispatch();
   const AllProductsDetails = useAppSelector((state) => state.AllProductsDetails);
+  const [initialData, setInitialData] = useState<Product[]>([]);
 
   useEffect(() => {
-    if (AllProductsDetails.content.length === 0) {
-      const getAllProductsDetails = async () => {
-        try {
-          const ProductData = await PRODUCT_SERVICE.getProducts();
-          dispatch(
-            setAllProductDetails({
-              content: ProductData,
-              totalDoc: ProductData.length,
-            })
-          );
-        } catch (error) {
-          console.log("error:", error);
-          toast.error("Unable to fetch product details");
-        }
-      };
+    const getAllProductsDetails = async () => {
+      try {
+        const ProductData = await PRODUCT_SERVICE.getProducts();
+        setInitialData(ProductData);
+        dispatch(
+          setAllProductDetails({
+            content: ProductData,
+            totalDoc: ProductData.length,
+          })
+        );
+      } catch (error) {
+        console.log("error:", error);
+        toast.error("Unable to fetch product details");
+      }
+    };
 
+    if (AllProductsDetails.content.length === 0) {
       getAllProductsDetails();
+    } else {
+      setInitialData(AllProductsDetails.content);
     }
   }, [AllProductsDetails.content.length, dispatch]);
 
   return (
-    <>
-      <h1 className="divider text-2xl sm:text-3xl my-8 font-normal">
-        Products
-      </h1>
-      <div className="w-full p-4 grid sm:grid-cols-3">
-        <div className="sm:col-span-1 bg-gray-200 p-4 rounded-md h-auto">
-          <h1 className="divider divider-start text-md sm:text-xl my-8 font-normal">
-            Filters
+    <section className="w-full bg-white border-b-4 border-black py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8">
+        <div className="flex items-center gap-4 mb-8 pb-4 border-b-4 border-black">
+          <span className="bg-swiss-accent text-white px-3 py-1 text-xs font-black uppercase tracking-widest">
+            CATALOG ARCHITECTURE
+          </span>
+          <h1 className="text-2xl sm:text-4xl font-black uppercase tracking-tighter text-black">
+            ALL HARDWARE PRODUCTS
           </h1>
-          <ComingSoon />
         </div>
-        <div className="sm:col-span-2 p-4 flex flex-col gap-6">
-          {AllProductsDetails?.content.map((item, index) => (
-            <ProductStripView key={item.docId || index} data={item} />
-          ))}
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Left Column: Filter Sidebar */}
+          <div className="lg:col-span-4 border-4 border-black bg-swiss-muted p-6 sticky top-24">
+            <h3 className="text-sm font-black uppercase tracking-widest text-black border-b-2 border-black pb-3 mb-6">
+              01. FILTER SPECIFICATIONS
+            </h3>
+            <FilterBox data={initialData} />
+          </div>
+
+          {/* Right Column: Product Cards */}
+          <div className="lg:col-span-8 space-y-6">
+            {AllProductsDetails?.content.map((item, index) => (
+              <ProductStripView key={item.docId || index} data={item} />
+            ))}
+          </div>
         </div>
       </div>
-    </>
+    </section>
   );
 }

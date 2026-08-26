@@ -10,35 +10,38 @@ interface ProductsProps {
 export default function Products({ title, slug }: ProductsProps) {
   const AllProductsDetails = useAppSelector((state) => state.AllProductsDetails);
 
+  const filteredProducts = AllProductsDetails.content?.filter((item) => item.productType === slug) || [];
+
+  if (filteredProducts.length === 0) return null;
+
   return (
-    <div className="text-center w-full flex justify-center items-center flex-col my-8 gap-8 p-12">
-      <h1 className="divider text-2xl sm:text-3xl font-normal">{title}</h1>
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10 py-4">
-        {AllProductsDetails.content ? (
-          AllProductsDetails.content
-            .filter((item) => item.productType === slug)
-            .map((product) => (
-              <React.Suspense fallback={<SkeletonCard />} key={product.docId}>
-                <ProductCard data={product} />
-              </React.Suspense>
-            ))
-        ) : (
-          <SkeletonCard />
-        )}
+    <section className="w-full bg-white border-b-4 border-black py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8">
+        <div className="flex items-center gap-4 mb-8 pb-4 border-b-4 border-black">
+          <span className="bg-black text-white px-3 py-1 text-xs font-black uppercase tracking-widest">
+            COLLECTION
+          </span>
+          <h2 className="text-2xl sm:text-4xl font-black uppercase tracking-tighter text-black">
+            {title}
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {filteredProducts.map((product) => (
+            <React.Suspense fallback={<SkeletonCard />} key={product.docId}>
+              <ProductCard data={product} />
+            </React.Suspense>
+          ))}
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
 
 const SkeletonCard = () => (
-  <div className="relative card card-compact bg-base-100 w-80 sm:w-96 shadow-xl">
-    <div className="flex w-full px-3 py-2 flex-col gap-4">
-      <div className="skeleton h-4 w-1/2"></div>
-      <div className="skeleton h-52 w-full"></div>
-      <div className="skeleton h-4 w-28"></div>
-      <div className="skeleton h-4 w-full"></div>
-      <div className="skeleton h-4 w-full"></div>
-      <div className="skeleton h-4 w-full"></div>
-    </div>
+  <div className="border-2 border-black bg-white p-6 space-y-4 rounded-none">
+    <div className="bg-gray-200 h-6 w-1/2 animate-pulse"></div>
+    <div className="bg-gray-200 h-48 w-full animate-pulse"></div>
+    <div className="bg-gray-200 h-6 w-full animate-pulse"></div>
   </div>
 );

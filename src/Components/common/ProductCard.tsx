@@ -17,7 +17,7 @@ interface ProductCardProps {
 export default function ProductCard({ data }: ProductCardProps) {
   const dispatch = useAppDispatch();
   const [label, setLabel] = useState(true);
-  const [isWishlist, setIsWishlist] = useState(true);
+  const [isWishlist, setIsWishlist] = useState(false);
 
   const Wishlist = useAppSelector((state) => state.Wishlist);
   const UserCart = useAppSelector((state) => state.UserCart);
@@ -26,6 +26,14 @@ export default function ProductCard({ data }: ProductCardProps) {
   useEffect(() => {
     handleCartCheck();
   }, [UserCart, data]);
+
+  useEffect(() => {
+    if (Wishlist?.selectedProducts?.some((item) => (item.docId || item.id) === (data.docId || data.id))) {
+      setIsWishlist(true);
+    } else {
+      setIsWishlist(false);
+    }
+  }, [Wishlist, data]);
 
   const handleOpenModal = () => {
     const modal = document.getElementById(`my_modal_${data.docId}`) as HTMLDialogElement | null;
@@ -92,81 +100,95 @@ export default function ProductCard({ data }: ProductCardProps) {
   };
 
   function handleDescriptionLength(value: string) {
-    let newDescription = value.slice(0, 81);
+    let newDescription = value.slice(0, 80);
     return newDescription + "...";
   }
 
   return (
     <>
-      <div className="relative card card-compact bg-base-100 w-80 sm:w-96 shadow-xl">
+      <div className="relative border-2 border-black bg-white group hover:border-black transition-all duration-150 flex flex-col justify-between h-full">
         {data?.featuredImage ? (
           <>
-            <div className="absolute z-10 top-0 right-3 flex gap-4 px-3 py-2 rounded-xl">
-              <label className="swap swap-rotate">
-                <input
-                  type="checkbox"
-                  checked={isWishlist}
-                  onChange={handleIsWishlist}
-                />
-                <img
-                  src="/heart-empty.svg"
-                  alt="empty-heart"
-                  className="inline-block mr-2 swap-off h-6 w-6 mix-blend-color"
-                />
-                <img
-                  src="/heart-full.svg"
-                  alt="full-heart"
-                  className="inline-block mr-2 swap-on h-6 w-6 mix-blend-color "
-                />
-              </label>
-              <img
-                src="/expand-view.svg"
-                alt="view details"
-                className="inline-block mr-2 h-6 w-6 cursor-pointer"
-                onClick={handleOpenModal}
-              />
-            </div>
-            <TypeTag type={data?.productType} />
-            <figure className="min-h-[213px] max-h-[260px] min-w-[320px] max-w-[384px] overflow-hidden bg-black">
-              <img
-                src={data?.featuredImage}
-                alt={data?.title || "product image"}
-                className="object-cover bg-center"
-                loading="lazy"
-              />
-            </figure>
-            <div className="card-body">
-              <h2 className="card-title">{data?.title}</h2>
-              <p className="text-start">
-                {data?.description && data.description.length > 80
-                  ? handleDescriptionLength(data.description)
-                  : data?.description}
-              </p>
-
-              <div className="text-start flex items-center gap-2">
-                <Rating reviews={data?.review} />({data?.review})
-              </div>
-              <p className="text-start font-bold text-gray-700 text-lg">
-                &#8377; {data?.price}
-              </p>
-              <div className="card-actions justify-end">
+            {/* Top Toolbar */}
+            <div className="flex items-center justify-between p-3 border-b-2 border-black bg-swiss-muted">
+              <TypeTag type={data?.productType} />
+              <div className="flex items-center gap-2">
                 <button
-                  className={`btn ${label ? "btn-primary" : "btn-success"}`}
-                  onClick={AddToCart}
+                  type="button"
+                  onClick={handleIsWishlist}
+                  className={`w-8 h-8 flex items-center justify-center border border-black font-black text-xs transition-colors duration-150 ${
+                    isWishlist ? "bg-swiss-accent text-white" : "bg-white text-black hover:bg-black hover:text-white"
+                  }`}
+                  title="Toggle Wishlist"
                 >
-                  {label ? "Add to Cart" : "Remove"}
+                  ♥
+                </button>
+                <button
+                  type="button"
+                  onClick={handleOpenModal}
+                  className="w-8 h-8 flex items-center justify-center border border-black bg-white text-black font-black text-xs hover:bg-black hover:text-white transition-colors duration-150"
+                  title="Expand View"
+                >
+                  ↗
                 </button>
               </div>
             </div>
+
+            {/* Product Image Frame */}
+            <div className="relative aspect-square w-full border-b-2 border-black bg-white overflow-hidden flex items-center justify-center p-4">
+              <img
+                src={data?.featuredImage}
+                alt={data?.title || "Product Image"}
+                className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-200"
+                loading="lazy"
+              />
+            </div>
+
+            {/* Content Info */}
+            <div className="p-6 flex flex-col flex-grow justify-between gap-4">
+              <div>
+                <h3 className="font-black text-lg uppercase tracking-tight text-black line-clamp-1 mb-2">
+                  {data?.title}
+                </h3>
+                <p className="text-xs text-gray-700 leading-relaxed line-clamp-2">
+                  {data?.description && data.description.length > 80
+                    ? handleDescriptionLength(data.description)
+                    : data?.description}
+                </p>
+              </div>
+
+              {/* Price & Rating Row */}
+              <div className="flex items-center justify-between pt-4 border-t border-black">
+                <div>
+                  <span className="text-xs text-gray-500 block uppercase font-bold tracking-wider">PRICE</span>
+                  <span className="text-xl font-black tracking-tight text-black">₹ {data?.price}</span>
+                </div>
+                <div className="text-right">
+                  <span className="text-xs text-gray-500 block uppercase font-bold tracking-wider">RATING</span>
+                  <span className="text-xs font-black bg-black text-white px-2 py-0.5">
+                    ★ {data?.review || 4.5}
+                  </span>
+                </div>
+              </div>
+
+              {/* Action Button */}
+              <button
+                className={`w-full py-3 border-2 border-black font-black text-xs uppercase tracking-widest transition-colors duration-150 ${
+                  label
+                    ? "bg-black text-white hover:bg-swiss-accent hover:border-swiss-accent"
+                    : "bg-swiss-accent text-white border-swiss-accent hover:bg-black hover:border-black"
+                }`}
+                onClick={AddToCart}
+              >
+                {label ? "ADD TO CART +" : "REMOVE ITEM -"}
+              </button>
+            </div>
           </>
         ) : (
-          <div className="flex w-full px-3 py-2 flex-col gap-4">
-            <div className="skeleton h-4 w-1/2"></div>
-            <div className="skeleton h-52 w-full"></div>
-            <div className="skeleton h-4 w-28"></div>
-            <div className="skeleton h-4 w-full"></div>
-            <div className="skeleton h-4 w-full"></div>
-            <div className="skeleton h-4 w-full"></div>
+          <div className="p-6 space-y-4">
+            <div className="bg-gray-200 h-6 w-1/2 animate-pulse"></div>
+            <div className="bg-gray-200 h-48 w-full animate-pulse"></div>
+            <div className="bg-gray-200 h-6 w-full animate-pulse"></div>
           </div>
         )}
       </div>
@@ -190,51 +212,60 @@ interface ProductDetailsProps {
 
 const ProductDetails = ({ data, label, AddToCart, index }: ProductDetailsProps) => {
   return (
-    <dialog id={`my_modal_${index}`} className="modal">
-      <div className="modal-box w-11/12 max-w-5xl">
-        <form method="dialog">
-          <button
-            className="btn sm:btn-sm btn-circle btn-ghost absolute right-2 top-2 z-50"
-            aria-label="Close"
-          >
-            ✕
-          </button>
-        </form>
-        <div className="hero">
-          <div className="hero-content flex-col lg:flex-row">
-            <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl mt-3">
-              <img
-                src={data?.featuredImage}
-                alt={data?.title || "product image"}
-              />
-            </div>
-            <div className="text-center lg:text-left">
-              <h1 className="text-5xl font-bold">{data?.title}</h1>
-              <p className="pt-6 text-start">{data?.description}</p>
-              <div className="pt-2">
-                {data?.color && data.color.length > 0 && (
-                  <div className="flex gap-2">
-                    {data.color.map((item) => (
-                      <div
-                        className="w-6 h-6 rounded-full border"
-                        style={{ backgroundColor: item.value }}
-                        key={item.value}
-                      ></div>
-                    ))}
-                  </div>
-                )}
+    <dialog id={`my_modal_${index}`} className="modal modal-bottom sm:modal-middle">
+      <div className="modal-box border-4 border-black bg-white rounded-none p-0 max-w-4xl w-full">
+        <div className="flex items-center justify-between p-4 border-b-4 border-black bg-black text-white">
+          <h3 className="font-black text-lg uppercase tracking-tight">PRODUCT SPECIFICATION</h3>
+          <form method="dialog">
+            <button className="text-white hover:text-swiss-accent font-black text-xl px-2" aria-label="Close">
+              ✕
+            </button>
+          </form>
+        </div>
+
+        <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+          <div className="border-2 border-black p-4 bg-swiss-muted flex items-center justify-center">
+            <img
+              src={data?.featuredImage}
+              alt={data?.title || "Product Image"}
+              className="max-h-80 object-contain"
+            />
+          </div>
+          <div className="space-y-4 text-left">
+            <TypeTag type={data?.productType} />
+            <h2 className="text-3xl font-black uppercase tracking-tight text-black">{data?.title}</h2>
+            <p className="text-sm text-gray-800 leading-relaxed border-l-4 border-black pl-4 py-1">
+              {data?.description}
+            </p>
+
+            {data?.color && data.color.length > 0 && (
+              <div>
+                <span className="text-xs font-bold uppercase tracking-widest text-gray-500 block mb-2">COLORS</span>
+                <div className="flex gap-2">
+                  {data.color.map((item) => (
+                    <div
+                      className="w-6 h-6 border-2 border-black"
+                      style={{ backgroundColor: item.value }}
+                      key={item.value}
+                      title={item.label || item.value}
+                    ></div>
+                  ))}
+                </div>
               </div>
-              <p className="py-2 text-sm text-start">
-                Customer reviews ({data?.review})
-              </p>
-              <p className="py-2 text-start font-bold text-gray-700 text-lg">
-                &#8377; {data?.price}
-              </p>
+            )}
+
+            <div className="pt-4 border-t-2 border-black flex items-center justify-between">
+              <div>
+                <span className="text-xs font-bold uppercase tracking-widest text-gray-500 block">TOTAL PRICE</span>
+                <span className="text-2xl font-black text-black">₹ {data?.price}</span>
+              </div>
               <button
-                className={`btn ${label ? "btn-primary" : "btn-success"}`}
+                className={`px-6 py-3 border-2 border-black font-black text-xs uppercase tracking-widest ${
+                  label ? "bg-black text-white hover:bg-swiss-accent" : "bg-swiss-accent text-white"
+                }`}
                 onClick={AddToCart}
               >
-                {label ? "Add to Cart" : "Remove"}
+                {label ? "ADD TO CART +" : "REMOVE ITEM -"}
               </button>
             </div>
           </div>
@@ -244,52 +275,30 @@ const ProductDetails = ({ data, label, AddToCart, index }: ProductDetailsProps) 
   );
 };
 
-const Rating = ({ reviews }: { reviews?: number | string }) => {
-  let number = Math.round(Number(reviews || 0) / 100);
-  number = Math.max(0, Math.min(5, number));
-
-  return (
-    <div className="rating sm:rating-md">
-      {number <= 5 &&
-        [...Array(5)].map((_, index) => (
-          <input
-            key={index}
-            type="radio"
-            name="rating-4"
-            className={`mask mask-star-2 ${
-              index < number ? "bg-black" : "bg-gray-300"
-            }`}
-            readOnly
-          />
-        ))}
-    </div>
-  );
-};
-
 const TypeTag = ({ type }: { type?: string }) => {
   if (type === "newArrival") {
     return (
-      <div className="badge bg-green-600 text-white gap-2 px-2 py-3 m-3 top-4 left-4 rounded-full">
-        New Arrival
-      </div>
+      <span className="bg-black text-white text-[10px] font-black uppercase tracking-widest px-2.5 py-1 border border-black">
+        NEW ARRIVAL
+      </span>
     );
   } else if (type === "trending") {
     return (
-      <div className="badge bg-red-600 text-white px-2 py-3 gap-2 m-3 top-4 left-4 rounded-full">
-        Trending
-      </div>
+      <span className="bg-swiss-accent text-white text-[10px] font-black uppercase tracking-widest px-2.5 py-1 border border-swiss-accent">
+        TRENDING
+      </span>
     );
   } else if (type === "popular") {
     return (
-      <div className="badge bg-yellow-500 rounded-full gap-2 px-2 py-3 m-3 top-4 left-4">
-        Popular
-      </div>
+      <span className="bg-black text-white text-[10px] font-black uppercase tracking-widest px-2.5 py-1 border border-black">
+        POPULAR
+      </span>
     );
   } else {
     return (
-      <div className="badge bg-white border-black rounded-full gap-2 px-2 py-3 m-3 top-4 left-4">
-        Regular
-      </div>
+      <span className="bg-white text-black text-[10px] font-black uppercase tracking-widest px-2.5 py-1 border border-black">
+        REGULAR
+      </span>
     );
   }
 };

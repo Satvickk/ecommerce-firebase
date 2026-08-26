@@ -13,12 +13,17 @@ export default function ProductStripView({ data }: ProductStripViewProps) {
 
   const dispatch = useAppDispatch();
   const UserCart = useAppSelector((state) => state.UserCart);
+  const Auth = useAppSelector((state) => state.Auth?.isLogged);
 
   useEffect(() => {
     handleCartCheck();
   }, [UserCart, data]);
 
   const AddToCart = () => {
+    if (!Auth) {
+      toast.info("Please Login to Add products to Cart");
+      return;
+    }
     handleCartCheck();
     if (label) {
       dispatch(addProductToCart({ ...data }));
@@ -40,84 +45,58 @@ export default function ProductStripView({ data }: ProductStripViewProps) {
   };
 
   return (
-    <div className="relative card card-side bg-base-100 shadow-xl max-w-sm sm:max-w-lg md:max-w-full mx-auto">
-      <div className="absolute z-10 top-6 right-3 sm:top-4 sm:right-2 flex flex-col gap-4">
-        <label className="swap swap-rotate">
-          <input type="checkbox" />
-          <img
-            src="/heart-empty.svg"
-            alt="empty-heart"
-            className="inline-block mr-2 swap-off h-6 w-6"
-          />
-          <img
-            src="/heart-full.svg"
-            alt="full-heart"
-            className="inline-block mr-3 swap-on h-6 w-6"
-          />
-        </label>
+    <div className="border-2 border-black bg-white p-6 grid grid-cols-1 sm:grid-cols-12 gap-6 items-center hover:border-black transition-colors duration-150 rounded-none">
+      <div className="sm:col-span-4 border-2 border-black bg-swiss-muted p-4 h-48 flex items-center justify-center">
+        <img
+          src={data.featuredImage}
+          alt={data.title}
+          className="max-h-full object-contain"
+        />
       </div>
-      <div className="card-body p-0 sm:p-6">
-        <div className="hero">
-          <div className="hero-content flex-col sm:flex-row">
-            <div className="card bg-base-100 shadow-2xl w-full sm:w-1/2 max-h-96 overflow-clip flex justify-center items-center">
-              <img
-                src={data.featuredImage}
-                alt="headphones"
-                className="w-full h-auto object-cover bg-center"
-              />
-            </div>
-            <div className="text-center sm:text-left w-full sm:w-1/2 mt-4 sm:mt-0 sm:ml-4">
-              <h1 className="text-3xl sm:text-5xl font-bold">{data.title}</h1>
-              <p className="pt-6 text-start">{data.description}</p>
-              <div className="pt-2">
-                {data.color && (
-                  <div className="flex gap-2">
-                    {data.color.map((item) => (
-                      <div
-                        className="w-6 h-6 rounded-full border"
-                        style={{ backgroundColor: item.value }}
-                        key={item.value}
-                      ></div>
-                    ))}
-                  </div>
-                )}
-              </div>
-              <div className="text-start flex items-center gap-2 mt-2">
-                <Rating number={Number(data.review || 0)} />
-                ({data.review})
-              </div>
-              <p className="py-2 text-start font-bold text-gray-700 text-lg ">
-                &#8377; {data.price}
-              </p>
-              <button
-                className={`btn ${label ? "btn-primary" : "btn-success"}`}
-                onClick={AddToCart}
-              >
-                {label ? "Add to Cart" : "Remove"}
-              </button>
-            </div>
+
+      <div className="sm:col-span-8 flex flex-col justify-between space-y-4">
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="font-black text-xl uppercase tracking-tight text-black">{data.title}</h3>
+            <span className="text-xl font-black text-black">₹ {data.price}</span>
           </div>
+          <p className="text-xs text-gray-700 leading-relaxed border-l-2 border-black pl-3 py-0.5">
+            {data.description}
+          </p>
+        </div>
+
+        {data.color && data.color.length > 0 && (
+          <div className="flex gap-2">
+            {data.color.map((item) => (
+              <div
+                className="w-5 h-5 border border-black"
+                style={{ backgroundColor: item.value }}
+                key={item.value}
+              ></div>
+            ))}
+          </div>
+        )}
+
+        <div className="pt-3 border-t border-black flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-black uppercase tracking-widest text-gray-500">RATING</span>
+            <span className="text-xs font-black bg-black text-white px-2 py-0.5">
+              ★ {data.review || 4.5}
+            </span>
+          </div>
+
+          <button
+            className={`px-6 py-2.5 border-2 border-black font-black text-xs uppercase tracking-widest transition-colors duration-150 ${
+              label
+                ? "bg-black text-white hover:bg-swiss-accent hover:border-swiss-accent"
+                : "bg-swiss-accent text-white border-swiss-accent hover:bg-black hover:border-black"
+            }`}
+            onClick={AddToCart}
+          >
+            {label ? "ADD TO CART +" : "REMOVE ITEM -"}
+          </button>
         </div>
       </div>
     </div>
   );
 }
-
-const Rating = ({ number }: { number?: number }) => {
-  return (
-    <div className="rating sm:rating-md">
-      {number &&
-        [...Array(5)].map((_, index) => (
-          <input
-            key={index}
-            type="radio"
-            name="rating-4"
-            className={`mask mask-star-2 ${
-              index < number / 100 ? "bg-black" : "bg-gray-300"
-            }`}
-            readOnly
-          />
-        ))}
-    </div>
-  );
-};

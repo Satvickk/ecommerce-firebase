@@ -80,51 +80,57 @@ export default function CheckoutLayout() {
   }
 
   return (
-    <section className="bg-gray-100 py-8 antialiased md:py-16">
-      <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
-        <div className="mx-auto max-w-5xl">
-          <h1 className="text-xl font-semibold text-gray-900 sm:text-3xl">
-            Checkout
+    <section className="w-full bg-white border-b-4 border-black py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8">
+        <div className="flex items-center gap-4 mb-8 pb-4 border-b-4 border-black">
+          <span className="bg-swiss-accent text-white px-3 py-1 text-xs font-black uppercase tracking-widest">
+            02. ORDER CHECKOUT
+          </span>
+          <h1 className="text-3xl sm:text-5xl font-black uppercase tracking-tighter text-black">
+            CHECKOUT SESSION
           </h1>
-          <div className="grid lg:grid-cols-12 sm:gap-6">
-            <div className="mt-6 lg:col-span-5 sm:mt-8 lg:flex lg:flex-col lg:items-start lg:gap-2 bg-slate-200 rounded-md px-5 py-3">
-              <h2 className="text-xl font-semibold text-gray-900 sm:text-xl">
-                Delivered to -
-              </h2>
-              <p className="text-center text-gray-500 lg:text-left">
-                {UserDetails?.name},
-              </p>
-              <p className="text-center text-gray-500 lg:text-left">
-                {UserDetails?.address} - {UserDetails?.pincode}
-              </p>
-              <p className="text-center text-gray-500 lg:text-left">
-                Ph-no: {UserDetails?.contact}
-              </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Left Column: Delivery Address Panel */}
+          <div className="lg:col-span-5 border-4 border-black bg-swiss-muted p-6 space-y-4">
+            <h3 className="text-sm font-black uppercase tracking-widest text-black border-b-2 border-black pb-3">
+              01. SHIPPING ADDRESS
+            </h3>
+            <div className="space-y-2 text-xs font-bold uppercase tracking-wider text-black">
+              <div className="text-sm font-black text-black">{UserDetails?.name || "CUSTOMER NAME"}</div>
+              <p className="leading-relaxed">{UserDetails?.address || "STREET ADDRESS NOT SET"}</p>
+              <p>PINCODE: {UserDetails?.pincode || "N/A"}</p>
+              <p className="pt-2 border-t border-black text-gray-600">CONTACT: {UserDetails?.contact || "N/A"}</p>
+              <p className="text-gray-600">EMAIL: {UserDetails?.email || "N/A"}</p>
             </div>
-            <div className="mt-6 lg:col-span-7 sm:mt-8 lg:flex lg:flex-col lg:items-start lg:gap-2">
-              <h2 className="text-xl font-semibold text-gray-900 sm:text-xl">
-                Your Products
-              </h2>
-              <CheckoutProductTable CheckoutData={Checkout} />
-              <div className="w-full">
-                <CheckoutForm />
-              </div>
+          </div>
+
+          {/* Right Column: Products & Payment */}
+          <div className="lg:col-span-7 border-4 border-black bg-white p-6 space-y-6">
+            <h3 className="text-sm font-black uppercase tracking-widest text-black border-b-2 border-black pb-3">
+              02. SELECTED HARDWARE
+            </h3>
+
+            <CheckoutProductTable CheckoutData={Checkout} />
+
+            <div className="space-y-3 pt-4 border-t-2 border-black">
+              <CheckoutForm />
+
               <button
-                className="btn btn-outline w-full"
+                className="w-full py-3 bg-white text-black font-black text-xs uppercase tracking-widest border-2 border-black hover:bg-swiss-accent hover:text-white hover:border-swiss-accent transition-colors duration-150 rounded-none"
                 onClick={() => {
                   const modal = document.getElementById("confirmCancelOrder") as HTMLDialogElement | null;
                   if (modal) modal.showModal();
                 }}
               >
-                Cancel Order
+                CANCEL CHECKOUT SESSION ✕
               </button>
             </div>
           </div>
-          <p className="mt-6 text-center text-gray-500 sm:mt-8 lg:text-left">
-            Payment processed by MyShop
-          </p>
         </div>
       </div>
+
       <ConfirmCancelOrder
         handleClose={handleClose}
         handleOrderLater={handleOrderLater}

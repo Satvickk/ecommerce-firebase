@@ -16,7 +16,7 @@ import {
   FirebaseStorage
 } from "firebase/storage";
 import { Firestore, Storage, CloudFunction } from "./Config/Configuration";
-import { httpsCallable, Functions as FirebaseFunctions } from "firebase/functions";
+import { httpsCallable, Functions as FirebaseFunctions, HttpsCallable } from "firebase/functions";
 import { Product } from "../types";
 
 export class ProductService {
@@ -25,9 +25,9 @@ export class ProductService {
   private cloudFunction: FirebaseFunctions;
   private collectionName: string;
   private storageFolderName: string;
-  private createStripeProduct: any;
-  private updateStripeProduct: any;
-  private deleteStripeProduct: any;
+  private createStripeProduct: HttpsCallable<Record<string, unknown>, { product: string; id: string }>;
+  private updateStripeProduct: HttpsCallable<Record<string, unknown>, unknown>;
+  private deleteStripeProduct: HttpsCallable<Record<string, unknown>, unknown>;
 
   constructor() {
     this.db = Firestore;
@@ -62,7 +62,7 @@ export class ProductService {
     };
 
     try {
-      const stripeResponse: any = await this.createStripeProduct({ ...payload });
+      const stripeResponse = await this.createStripeProduct({ ...payload });
       const docRef = doc(this.db, this.collectionName, data.docId);
       const docSnap = await getDoc(docRef);
 
@@ -81,8 +81,9 @@ export class ProductService {
         console.log("No such document! Cannot add Stripe data to the database");
         return false;
       }
-    } catch (error: any) {
-      console.error("Error creating product in Stripe:", error.message);
+    } catch (error: unknown) {
+      const err = error as Error;
+      console.error("Error creating product in Stripe:", err?.message || error);
       return false;
     }
   }
@@ -121,8 +122,9 @@ export class ProductService {
       });
 
       return true;
-    } catch (error: any) {
-      console.error("Error updating product:", error.message);
+    } catch (error: unknown) {
+      const err = error as Error;
+      console.error("Error updating product:", err?.message || error);
       return false;
     }
   }
@@ -139,10 +141,11 @@ export class ProductService {
 
   async deleteProductInStripe(id: string) {
     try {
-      const resp: any = await this.deleteStripeProduct({ id });
+      const resp = await this.deleteStripeProduct({ id });
       return resp.data;
-    } catch (error: any) {
-      console.error("Error deleting product in Stripe:", error.message);
+    } catch (error: unknown) {
+      const err = error as Error;
+      console.error("Error deleting product in Stripe:", err?.message || error);
       return false;
     }
   }

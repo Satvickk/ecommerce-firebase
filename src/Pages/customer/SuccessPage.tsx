@@ -7,10 +7,12 @@ import { addOrderDetails } from "../../redux/orderSlice";
 import { setCheckoutProducts } from "../../redux/checkoutSlice";
 import { toast } from "react-toastify";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import type { RootState } from "../../redux/store/store";
+import { Order } from "../../types";
 
 export default function SuccessPage() {
-  const Checkout = useAppSelector((state) => state.Checkout);
-  const User = useAppSelector((state) => state.UserDetails);
+  const Checkout = useAppSelector((state: RootState) => state.Checkout);
+  const User = useAppSelector((state: RootState) => state.UserDetails);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -42,15 +44,15 @@ export default function SuccessPage() {
     const createNewOrder = async () => {
       if (!User?.userId) return;
       try {
-        const payload: any = {
+        const payload: Order = {
           orderId: ORDER_SERVICE.generateOrderId(),
           orderDetails: Checkout,
           customerDetails: {
-            customerName: User?.name,
-            pincode: User?.pincode,
-            address: User?.address,
-            contact: User?.contact,
-            email: User?.email
+            name: User?.name || "",
+            pincode: User?.pincode || "",
+            address: User?.address || "",
+            contact: User?.contact || "",
+            email: User?.email || ""
           },
           userId: User?.userId,
           orderDate: ORDER_SERVICE.getDateAndTime(),

@@ -6,9 +6,17 @@ interface LogoProps extends Partial<LinkProps> {
 
 export default function Logo({ className = "", ...rest }: LogoProps) {
   return (
-    <Link className={`flex gap-3 items-center font-semibold bg-transparent text-xl ${className}`} to="/" data-theme="wireframe" {...rest}>
-      <img src='/myShop.png' alt="Logo" className="w-8 h-8 sm:w-12 sm:h-12"/>
-      MyShop
+    <Link 
+      className={`flex items-center gap-3 font-black text-xl sm:text-2xl tracking-tighter uppercase text-black group ${className}`} 
+      to="/" 
+      {...rest}
+    >
+      <div className="bg-black text-white w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center font-black text-lg transition-colors duration-150 group-hover:bg-swiss-accent">
+        M
+      </div>
+      <span className="group-hover:text-swiss-accent transition-colors duration-150 tracking-tight">
+        MY<span className="text-swiss-accent group-hover:text-black">SHOP</span>
+      </span>
     </Link>
   );
 }

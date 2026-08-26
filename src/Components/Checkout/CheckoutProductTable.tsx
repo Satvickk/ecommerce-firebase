@@ -6,54 +6,40 @@ interface CheckoutProductTableProps {
 
 export default function CheckoutProductTable({ CheckoutData }: CheckoutProductTableProps) {
   return (
-    <div className="overflow-x-auto">
-      <table className="table">
+    <div className="w-full overflow-x-auto border-2 border-black bg-white my-4">
+      <table className="w-full text-left border-collapse text-xs uppercase font-bold">
         <thead>
-          <tr>
-            <th>Product</th>
-            <th></th>
-            <th>Quantity</th>
-            <th></th>
-            <th>Price (₹)</th>
-            <th></th>
+          <tr className="bg-black text-white border-b-2 border-black">
+            <th className="p-4">PRODUCT SPECIFICATION</th>
+            <th className="p-4 text-center">QUANTITY</th>
+            <th className="p-4 text-right">UNIT PRICE</th>
           </tr>
         </thead>
         <tbody>
           {CheckoutData?.selectedProducts?.length > 0 &&
-            CheckoutData?.totalCost &&
             CheckoutData.selectedProducts.map((item, index) => (
-              <tr key={item.docId || index}>
-                <td>
+              <tr key={item.docId || index} className="border-b border-black last:border-b-0 hover:bg-swiss-muted">
+                <td className="p-4">
                   <div className="flex items-center gap-3">
-                    <div className="avatar">
-                      <div className="mask mask-squircle h-12 w-12">
-                        <img
-                          src={item.featuredImage}
-                          alt={item.title || "Product"}
-                        />
-                      </div>
+                    <div className="w-10 h-10 border border-black bg-white p-1 flex items-center justify-center shrink-0">
+                      <img
+                        src={item.featuredImage}
+                        alt={item.title || "Product"}
+                        className="max-h-full object-contain"
+                      />
                     </div>
-                    <div>
-                      <div className="font-bold">{item.title}</div>
-                    </div>
+                    <span className="font-black text-black">{item.title}</span>
                   </div>
                 </td>
-                <td></td>
-                <td>{item.quantity}</td>
-                <td></td>
-                <td>₹ {item.price}</td>
-                <td></td>
+                <td className="p-4 text-center font-black text-black">{item.quantity}</td>
+                <td className="p-4 text-right font-black text-black">₹ {item.price}</td>
               </tr>
             ))}
         </tbody>
         <tfoot>
-          <tr>
-            <th></th>
-            <th></th>
-            <th>Total Price</th>
-            <th></th>
-            <th>₹ {CheckoutData.totalCost}</th>
-            <th></th>
+          <tr className="bg-swiss-muted border-t-2 border-black text-black font-black">
+            <td colSpan={2} className="p-4 uppercase tracking-widest text-right">TOTAL AMOUNT:</td>
+            <td className="p-4 text-right text-base text-swiss-accent">₹ {CheckoutData.totalCost}</td>
           </tr>
         </tfoot>
       </table>

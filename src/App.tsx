@@ -9,6 +9,8 @@ import { useUserDetails } from "./lib/hooks/GetDetailsHooks";
 import { toast } from "react-toastify";
 import { removeUserDetails } from "./redux/userDetailSlice";
 import CartDesktopManage from "./Components/Cart/cart-desktop-manage";
+import type { RootState } from "./redux/store/store";
+import type { User } from "firebase/auth";
 
 function App() {
   const PHONE_MENU_DATA = [
@@ -26,9 +28,9 @@ function App() {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const Auth = useAppSelector((state) => state.Auth);
-  const isLoggedIn = useAppSelector((state) => state.Auth?.isLogged);
-  const userData = useAppSelector((state) => state.UserDetails);
+  const Auth = useAppSelector((state: RootState) => state.Auth);
+  const isLoggedIn = useAppSelector((state: RootState) => state.Auth?.isLogged);
+  const userData = useAppSelector((state: RootState) => state.UserDetails);
 
   useEffect(() => {
     const drawer = document.getElementById("my-drawer-4") as HTMLInputElement | null;
@@ -38,7 +40,7 @@ function App() {
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const resp: any = await AUTH_SERVICE.getCurrentUser();
+        const resp = (await AUTH_SERVICE.getCurrentUser()) as (User & { accessToken?: string }) | null;
         if (resp) {
           const { uid, displayName, email } = resp;
           dispatch(
@@ -49,7 +51,9 @@ function App() {
               isLogged: true,
             })
           );
-          window.localStorage.setItem("authToken", resp.accessToken || "");
+          if (resp.accessToken) {
+            window.localStorage.setItem("authToken", resp.accessToken);
+          }
         }
       } catch (error) {
         console.log("Error fetching user details:", error);

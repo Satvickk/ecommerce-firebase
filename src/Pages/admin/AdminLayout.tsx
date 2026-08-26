@@ -5,22 +5,27 @@ import SideBar from "../../Components/Admin/SideBar";
 
 export default function AdminLayout() {
   const USER_SETTINGS_TABS = [
-    { label: "Users", src: "/admin" },
-    { label: "Products", src: "adminProducts" },
-    { label: "Orders", src: "adminOrders" },
-    { label: "Profile", src: "adminProfile" },
+    { label: "Users List", src: "/admin" },
+    { label: "Products Catalog", src: "adminProducts" },
+    { label: "Orders Database", src: "adminOrders" },
+    { label: "Admin Profile", src: "adminProfile" },
   ];
 
   return (
     <div className="layout-desktop-container">
       <AdminHeader />
-      <div className="layout-desktop-item-grow">
-        <div className="w-full p-4 grid sm:grid-cols-4 gap-4">
-          <div className="sm:col-span-1 bg-gray-200 p-4 rounded-md h-auto flex flex-col gap-3">
-            <SideBar tabs={USER_SETTINGS_TABS} />
-          </div>
-          <div className="sm:col-span-3 bg-gray-200 p-4 rounded-md h-auto flex flex-col gap-3">
-            <Outlet />
+      <div className="layout-desktop-item-grow bg-white py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            {/* Left Column: Admin Navigation */}
+            <div className="lg:col-span-3 border-4 border-black bg-swiss-muted p-6">
+              <SideBar tabs={USER_SETTINGS_TABS} />
+            </div>
+
+            {/* Right Column: Dynamic Panel */}
+            <div className="lg:col-span-9 border-4 border-black bg-white p-6 sm:p-8">
+              <Outlet />
+            </div>
           </div>
         </div>
       </div>

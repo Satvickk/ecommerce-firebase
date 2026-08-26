@@ -28,41 +28,46 @@ export default function OrderLayout() {
   }, [UserDetails?.userId, dispatch]);
 
   return (
-    <div className="text-center w-full flex justify-center items-center flex-col my-8 gap-8 p-2 sm:p-12 ">
-      <h1 className="divider text-2xl sm:text-3xl font-normal">My Orders</h1>
-      <div className="py-4 w-full">
-        <div className="overflow-x-auto">
-          <table className="table">
+    <section className="w-full bg-white border-b-4 border-black py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8">
+        <div className="flex items-center gap-4 mb-8 pb-4 border-b-4 border-black">
+          <span className="bg-swiss-accent text-white px-3 py-1 text-xs font-black uppercase tracking-widest">
+            04. ORDER HISTORY
+          </span>
+          <h1 className="text-3xl sm:text-5xl font-black uppercase tracking-tighter text-black">
+            MY ORDERS
+          </h1>
+        </div>
+
+        <div className="w-full border-4 border-black bg-white overflow-x-auto">
+          <table className="w-full text-left border-collapse">
             <thead>
-              <tr>
-                <th>Products</th>
-                <th>Delivery Address</th>
-                <th>OrderId</th>
-                <th>Order Date</th>
-                <th>Delivery Status</th>
-                <th>Delivery Date</th>
-                <th>Total Cost (₹)</th>
-                <th></th>
+              <tr className="bg-black text-white text-xs font-black uppercase tracking-widest border-b-4 border-black">
+                <th className="p-4">HARDWARE PRODUCTS</th>
+                <th className="p-4">DELIVERY ADDRESS</th>
+                <th className="p-4">ORDER ID</th>
+                <th className="p-4">DATE</th>
+                <th className="p-4">STATUS</th>
+                <th className="p-4">DELIVERY DATE</th>
+                <th className="p-4 text-right">TOTAL COST</th>
               </tr>
             </thead>
             <tbody>
-              {Orders?.content?.map((item, index) => (
-                <OrderRow
-                  key={item.docId || index}
-                  data={item}
-                />
-              ))}
+              {Orders?.content?.length > 0 ? (
+                Orders.content.map((item, index) => (
+                  <OrderRow key={item.docId || index} data={item} />
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={7} className="p-12 text-center text-xs font-bold uppercase tracking-wider text-gray-500 bg-swiss-muted">
+                    NO ORDER HISTORY RECORDED.
+                  </td>
+                </tr>
+              )}
             </tbody>
-            <tfoot>
-              <tr className="font-light my-3">
-                <td colSpan={8}>
-                  ℹ️ for any concern related to your orders please contact us
-                </td>
-              </tr>
-            </tfoot>
           </table>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

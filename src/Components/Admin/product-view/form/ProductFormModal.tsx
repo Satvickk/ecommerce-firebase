@@ -33,57 +33,62 @@ export default function ProductFormModal({ editData, onClose }: ProductFormModal
   useEffect(() => {
     if (editData) {
       isEdit.current = true;
-      reset(editData as any);
+      reset(editData as unknown as Record<string, unknown>);
     } else {
       isEdit.current = false;
     }
   }, [editData, reset]);
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (formData: Record<string, unknown>) => {
     setLoading(true);
+    const data = { ...formData } as unknown as Product & { featuredImage: string | File };
 
     try {
       if (isEdit.current && editData?.docId) {
         try {
-          if (data.featuredImage instanceof File) {
-            const resp = await PRODUCT_SERVICE.uploadFile(data.featuredImage);
+          const featuredImg = data.featuredImage as unknown;
+          if (featuredImg instanceof File) {
+            const resp = await PRODUCT_SERVICE.uploadFile(featuredImg);
             if (resp) {
               data.featuredImage = resp.downloadURL;
               data.fileId = resp.fileId;
             }
           }
-          await PRODUCT_SERVICE.updateProduct(editData.docId, { ...data });
-          dispatch(updateSingleProductDetails({ ...data, docId: editData.docId }));
+          await PRODUCT_SERVICE.updateProduct(editData.docId, { ...data } as Product);
+          dispatch(updateSingleProductDetails({ ...(data as Product), docId: editData.docId }));
           toast.success("Product updated successfully");
-          await PRODUCT_SERVICE.updateProductInStripe({ ...data, docId: editData.docId });
+          await PRODUCT_SERVICE.updateProductInStripe({ ...(data as Product), docId: editData.docId });
         } catch (error) {
           console.error("Error in updating product:", error);
           toast.error("Something went wrong!");
         }
       } else {
         try {
-          const resp = await PRODUCT_SERVICE.uploadFile(data.featuredImage);
-          if (resp) {
-            const product = await PRODUCT_SERVICE.createProduct({
-              ...data,
-              featuredImage: resp.downloadURL,
-              fileId: resp.fileId,
-            });
-
-            if (product) {
-              const storeData: Product = {
-                ...data,
+          const featuredImg = data.featuredImage as unknown;
+          if (featuredImg instanceof File) {
+            const resp = await PRODUCT_SERVICE.uploadFile(featuredImg);
+            if (resp) {
+              const product = await PRODUCT_SERVICE.createProduct({
+                ...(data as Product),
                 featuredImage: resp.downloadURL,
                 fileId: resp.fileId,
-                docId: product.id,
-              };
+              });
 
-              dispatch(addSingleProductDetails({ ...storeData }));
-              onClose();
-              toast.success("Product added successfully");
-              const response: any = await PRODUCT_SERVICE.createProductInStripe(storeData);
-              if (response) {
-                dispatch(updateSingleProductDetails({ ...response }));
+              if (product) {
+                const storeData: Product = {
+                  ...(data as Product),
+                  featuredImage: resp.downloadURL,
+                  fileId: resp.fileId,
+                  docId: product.id,
+                };
+
+                dispatch(addSingleProductDetails({ ...storeData }));
+                onClose();
+                toast.success("Product added successfully");
+                const response = await PRODUCT_SERVICE.createProductInStripe(storeData);
+                if (response) {
+                  dispatch(updateSingleProductDetails({ ...response }));
+                }
               }
             }
           }

@@ -57,74 +57,72 @@ export default function UpdateProfile({ handleClose, isClose = true }: UpdatePro
   };
 
   return (
-    <div>
-      <h1 className="divider divider-start text-2xl sm:text-2xl my-8 font-normal">
-        Update Profile
-      </h1>
-      <div className="card bg-base-100 w-full max-w-sm sm:max-w-full shrink-0 shadow-2xl">
-        <form className="card-body" onSubmit={handleSubmit(UpdateUserDetails)}>
-          <div className="form-control">
-            <label className="label">
-              <span className="label-text">Full Name</span>
-            </label>
-            <input
-              type="text"
-              placeholder="Full Name"
-              className="input input-bordered"
-              {...register("name")}
-            />
-            <p className="text-red-600">{errors.name?.message}</p>
-          </div>
-          <div className="form-control">
-            <label className="label">
-              <span className="label-text">House Address</span>
-            </label>
-            <input
-              type="text"
-              placeholder="House Address"
-              className="input input-bordered"
-              {...register("address")}
-            />
-            <p className="text-red-600">{errors.address?.message}</p>
-          </div>
-          <div className="grid sm:grid-cols-2 gap-2">
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Contact Number</span>
-              </label>
-              <input
-                type="text"
-                placeholder="Contact number"
-                className="input input-bordered"
-                {...register("contact")}
-              />
-              <p className="text-red-600">{errors.contact?.message}</p>
-            </div>
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Pin Code</span>
-              </label>
-              <input
-                type="text"
-                placeholder="Pin Code"
-                className="input input-bordered"
-                {...register("pincode")}
-              />
-              <p className="text-red-600">{errors.pincode?.message}</p>
-            </div>
-          </div>
-          <div className="form-control mt-6 gap-3">
-            <LoadingButton isLoading={loading} type="submit">
-              Update
-            </LoadingButton>
-            {handleClose && (
-              <button type="button" className="btn btn-outline" onClick={handleClose}>
-                Close
-              </button>
-            )}
-          </div>
-        </form>
+    <div className="space-y-6">
+      <div className="border-b-4 border-black pb-3">
+        <h2 className="text-xl font-black uppercase tracking-tight text-black">UPDATE USER SPECIFICATIONS</h2>
       </div>
+
+      <form className="space-y-4" onSubmit={handleSubmit(UpdateUserDetails)}>
+        <div>
+          <label className="block text-xs font-black uppercase tracking-widest text-black mb-1">FULL NAME</label>
+          <input
+            type="text"
+            placeholder="Full Name"
+            className="w-full border-2 border-black px-4 py-3 text-xs font-bold uppercase focus:border-swiss-accent focus:outline-none rounded-none"
+            {...register("name")}
+          />
+          <p className="text-swiss-accent text-xs font-bold mt-1">{errors.name?.message}</p>
+        </div>
+
+        <div>
+          <label className="block text-xs font-black uppercase tracking-widest text-black mb-1">HOUSE ADDRESS</label>
+          <input
+            type="text"
+            placeholder="House Address"
+            className="w-full border-2 border-black px-4 py-3 text-xs font-bold uppercase focus:border-swiss-accent focus:outline-none rounded-none"
+            {...register("address")}
+          />
+          <p className="text-swiss-accent text-xs font-bold mt-1">{errors.address?.message}</p>
+        </div>
+
+        <div className="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-black uppercase tracking-widest text-black mb-1">CONTACT TELEPHONE</label>
+            <input
+              type="text"
+              placeholder="Contact Number"
+              className="w-full border-2 border-black px-4 py-3 text-xs font-bold uppercase focus:border-swiss-accent focus:outline-none rounded-none"
+              {...register("contact")}
+            />
+            <p className="text-swiss-accent text-xs font-bold mt-1">{errors.contact?.message}</p>
+          </div>
+          <div>
+            <label className="block text-xs font-black uppercase tracking-widest text-black mb-1">POSTAL PIN CODE</label>
+            <input
+              type="text"
+              placeholder="Pin Code"
+              className="w-full border-2 border-black px-4 py-3 text-xs font-bold uppercase focus:border-swiss-accent focus:outline-none rounded-none"
+              {...register("pincode")}
+            />
+            <p className="text-swiss-accent text-xs font-bold mt-1">{errors.pincode?.message}</p>
+          </div>
+        </div>
+
+        <div className="pt-4 flex flex-col sm:flex-row gap-3">
+          <LoadingButton isLoading={loading} type="submit" className="w-full py-3">
+            SAVE UPDATES →
+          </LoadingButton>
+          {handleClose && (
+            <button
+              type="button"
+              className="w-full bg-white text-black font-black text-xs uppercase tracking-widest py-3 border-2 border-black hover:bg-swiss-muted"
+              onClick={handleClose}
+            >
+              CLOSE
+            </button>
+          )}
+        </div>
+      </form>
     </div>
   );
 }

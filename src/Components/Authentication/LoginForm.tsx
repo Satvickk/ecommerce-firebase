@@ -6,10 +6,11 @@ import LoadingButton from "../common/LoadingButton";
 import { toast } from "react-toastify";
 import AUTH_SERVICE from "../../Firebase/authService";
 import { setAuth } from "../../redux/authSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import USER_SERVICE from "../../Firebase/userService";
 import { setUserDetails } from "../../redux/userDetailSlice";
 import { useAppDispatch } from "../../redux/hooks";
+import type { User } from "firebase/auth";
 
 export default function LoginForm() {
   const { handleSubmit, register, reset, formState: { errors } } = useForm({
@@ -22,7 +23,7 @@ export default function LoginForm() {
   const handleLoginUser = async (values: any) => {
     setLoading(true);
     try {
-      const resp: any = await AUTH_SERVICE.login({ ...values });
+      const resp = (await AUTH_SERVICE.login({ email: values.email, password: values.password })) as (User & { accessToken?: string }) | null;
       if (resp) {
         window.localStorage.setItem("authToken", resp.accessToken || "");
         const { uid, displayName, email } = resp;
@@ -49,53 +50,63 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="hero bg-base-200 min-h-full w-full">
-      <div className="hero-content flex-col justify-between lg:flex-row-reverse">
-        <div className="text-center lg:text-left">
-          <h1 className="text-5xl font-bold">Login now!</h1>
-          <p className="py-6">
-            Welcome back! Log in to access your account.
+    <section className="w-full bg-white border-b-4 border-black py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div className="lg:col-span-6 space-y-6">
+          <span className="bg-swiss-accent text-white px-3 py-1 text-xs font-black uppercase tracking-widest inline-block">
+            01. AUTHENTICATION
+          </span>
+          <h1 className="text-4xl sm:text-7xl font-black uppercase tracking-tighter text-black leading-none">
+            USER ACCESS PORTAL.
+          </h1>
+          <p className="text-sm font-medium text-black leading-relaxed border-l-4 border-black pl-4">
+            AUTHENTICATE TO ACCESS YOUR SAVED WISHLIST, ACTIVE CHECKOUT ORDERS, AND ACCOUNT PREFERENCES.
           </p>
         </div>
-        <div className="card bg-base-100 w-full max-w-sm sm:max-w-md shrink-0 shadow-2xl">
-          <form className="card-body" onSubmit={handleSubmit(handleLoginUser)}>
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Email</span>
-              </label>
+
+        <div className="lg:col-span-6 border-4 border-black bg-white p-8 space-y-6">
+          <h3 className="text-sm font-black uppercase tracking-widest text-black border-b-2 border-black pb-3">
+            LOG IN SPECIFICATIONS
+          </h3>
+
+          <form className="space-y-4" onSubmit={handleSubmit(handleLoginUser)}>
+            <div>
+              <label className="block text-xs font-black uppercase tracking-widest text-black mb-1">EMAIL ADDRESS</label>
               <input
                 type="email"
-                placeholder="email"
-                className="input input-bordered"
+                placeholder="NAME@DOMAIN.COM"
+                className="w-full border-2 border-black px-4 py-3 text-xs font-bold uppercase focus:border-swiss-accent focus:outline-none rounded-none"
                 {...register("email")}
               />
-              <p className="text-red-600">{errors.email?.message}</p>
+              <p className="text-swiss-accent text-xs font-bold mt-1">{errors.email?.message}</p>
             </div>
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Password</span>
-              </label>
+
+            <div>
+              <label className="block text-xs font-black uppercase tracking-widest text-black mb-1">PASSWORD</label>
               <input
                 type="password"
-                placeholder="password"
-                className="input input-bordered"
+                placeholder="••••••••"
+                className="w-full border-2 border-black px-4 py-3 text-xs font-bold uppercase focus:border-swiss-accent focus:outline-none rounded-none"
                 {...register("password")}
               />
-              <p className="text-red-600">{errors.password?.message}</p>
-              <label className="label">
-                <a href="#" className="label-text-alt link link-hover">
-                  Forgot password?
-                </a>
-              </label>
+              <p className="text-swiss-accent text-xs font-bold mt-1">{errors.password?.message}</p>
             </div>
-            <div className="form-control mt-6">
-              <LoadingButton className="btn btn-primary" isLoading={loading} type="submit">
-                Login
+
+            <div className="pt-2">
+              <LoadingButton className="w-full py-4" isLoading={loading} type="submit">
+                AUTHENTICATE & LOG IN →
               </LoadingButton>
+            </div>
+
+            <div className="pt-4 border-t-2 border-black flex justify-between items-center text-xs font-bold uppercase tracking-wider">
+              <span>NEW TO MYSHOP?</span>
+              <Link to="/signup" className="text-swiss-accent hover:underline">
+                CREATE ACCOUNT →
+              </Link>
             </div>
           </form>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

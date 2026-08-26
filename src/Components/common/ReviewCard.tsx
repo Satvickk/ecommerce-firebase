@@ -7,21 +7,21 @@ interface ReviewCardProps {
 
 export default function ReviewCard({ Image, Name, TimeStamp, Content }: ReviewCardProps) {
   return (
-    <div className="flex w-80 sm:w-96 flex-col gap-4 bg-slate-100 p-4 rounded-lg shadow-md">
-      <div className="flex items-center gap-4">
-        <div className="h-16 w-16 shrink-0">
+    <div className="flex w-80 sm:w-96 flex-col gap-4 bg-white border-2 border-black p-6 rounded-none hover:bg-black hover:text-white transition-colors duration-150 group">
+      <div className="flex items-center gap-4 border-b-2 border-black pb-4 group-hover:border-white">
+        <div className="h-12 w-12 border border-black group-hover:border-white overflow-hidden shrink-0">
           <img
-            className="w-full h-full object-cover rounded-full"
+            className="w-full h-full object-cover"
             src={Image}
             alt={Name}
           />
         </div>
-        <div className="flex flex-col gap-1">
-          <div className="text-lg font-semibold">{Name}</div>
-          <div className="text-sm text-gray-500">{TimeStamp}</div>
+        <div className="flex flex-col">
+          <div className="text-sm font-black uppercase tracking-tight">{Name}</div>
+          <div className="text-[10px] font-bold tracking-widest text-gray-500 group-hover:text-gray-300 uppercase">{TimeStamp}</div>
         </div>
       </div>
-      <div className="text-gray-700">{Content}</div>
+      <p className="text-xs font-medium leading-relaxed">{Content}</p>
     </div>
   );
 }

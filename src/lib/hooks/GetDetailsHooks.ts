@@ -3,11 +3,12 @@ import USER_SERVICE from "../../Firebase/userService";
 import { setUserDetails } from "../../redux/userDetailSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { toast } from "react-toastify";
+import type { RootState } from "../../redux/store/store";
 
 export const useUserDetails = () => {
   const dispatch = useAppDispatch();
-  const UserId = useAppSelector((state) => state.Auth?.userId);
-  const UserDetails = useAppSelector((state) => state.UserDetails);
+  const UserId = useAppSelector((state: RootState) => state.Auth?.userId);
+  const UserDetails = useAppSelector((state: RootState) => state.UserDetails);
 
   useEffect(() => {
     const fetchUserData = async () => {

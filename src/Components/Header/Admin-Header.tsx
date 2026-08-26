@@ -13,24 +13,26 @@ export default function AdminHeader() {
   };
 
   return (
-    <div className="navbar bg-black">
-      <div className="navbar-start">
-        <Link
-          className="btn btn-ghost text-xl text-white"
-          to="/admin"
-          data-theme="wireframe"
-        >
-          Admin Panel
-        </Link>
-      </div>
-      <div className="flex navbar-end gap-4 mt-3 mr-3">
+    <header className="w-full bg-black text-white border-b-4 border-black sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 h-16 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <span className="bg-swiss-accent text-white px-2 py-1 text-xs font-black uppercase tracking-widest">
+            SYSTEM
+          </span>
+          <Link
+            className="text-lg font-black tracking-tighter uppercase text-white hover:text-swiss-accent transition-colors duration-150"
+            to="/admin"
+          >
+            ADMIN CONSOLE
+          </Link>
+        </div>
         <button
-          className="btn border-2 border-red-600 text-red-600 bg-transparent hover:bg-red-600 hover:text-black"
+          className="bg-white text-black font-bold uppercase text-xs tracking-widest px-4 py-2 border-2 border-white hover:bg-swiss-accent hover:text-white hover:border-swiss-accent transition-colors duration-150"
           onClick={handleLogout}
         >
-          Back to Home
+          Exit Admin ←
         </button>
       </div>
-    </div>
+    </header>
   );
 }

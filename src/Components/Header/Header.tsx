@@ -1,19 +1,22 @@
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import Logo from "../common/Logo";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { deleteAuth } from "../../redux/authSlice";
 import AUTH_SERVICE from "../../Firebase/authService";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import type { RootState } from "../../redux/store/store";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const isLoggedIn = useAppSelector((state) => state.Auth.isLogged);
-  const userData = useAppSelector((state) => state.UserDetails);
-  const UserCart = useAppSelector((state) => state.UserCart);
+  const location = useLocation();
+
+  const isLoggedIn = useAppSelector((state: RootState) => state.Auth.isLogged);
+  const userData = useAppSelector((state: RootState) => state.UserDetails);
+  const UserCart = useAppSelector((state: RootState) => state.UserCart);
 
   function handleIsMenuOpen() {
     setIsMenuOpen(!isMenuOpen);
@@ -26,7 +29,7 @@ export default function Header() {
         dispatch(deleteAuth());
         window.localStorage.removeItem("authToken");
         window.localStorage.removeItem("role");
-        toast.success("Logout Successfull ! see you soon");
+        toast.success("Logout Successful! See you soon");
         navigate("/");
       }
     } catch (error) {
@@ -43,142 +46,151 @@ export default function Header() {
   ];
 
   return (
-    <div className="navbar bg-base-100">
-      <div className="navbar-start">
-        <Logo />
-      </div>
-      {isLoggedIn ? (
-        <div className="hidden sm:flex navbar-end gap-4 mt-3 mr-3">
-          {userData?.userRole === 2 && (
-            <label className="btn btn-circle">
-              <Link rel="noopener noreferrer" to={'/admin'}>
-                <img
-                  src="/admin-login.svg"
-                  alt="cart"
-                  className="w-6 h-6 inline-block"
-                />
-              </Link>
-            </label>
-          )}
-
-          <div className="dropdown dropdown-hover dropdown-end">
-            <div
-              tabIndex={0}
-              role="button"
-              className="btn btn-ghost rounded-btn"
+    <header className="w-full bg-white border-b-4 border-black sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 h-20 flex items-center justify-between">
+        <div className="flex items-center gap-8">
+          <Logo />
+          {/* Main Desktop Navigation */}
+          <nav className="hidden lg:flex items-center gap-6 ml-6">
+            <NavLink
+              to="/"
+              className={({ isActive }) =>
+                `text-xs font-bold uppercase tracking-widest px-3 py-2 transition-colors duration-150 ${
+                  isActive ? "bg-black text-white" : "text-black hover:bg-swiss-muted"
+                }`
+              }
             >
-              <img
-                src="/menu.svg"
-                alt="cart"
-                className="w-6 h-6 inline-block mr-2"
-              />
-              Menu
-            </div>
-            <ul
-              tabIndex={0}
-              className="menu dropdown-content bg-base-100 rounded-box z-40 w-52 p-2 shadow"
+              01. Home
+            </NavLink>
+            <NavLink
+              to="/product"
+              className={({ isActive }) =>
+                `text-xs font-bold uppercase tracking-widest px-3 py-2 transition-colors duration-150 ${
+                  isActive ? "bg-black text-white" : "text-black hover:bg-swiss-muted"
+                }`
+              }
             >
-              {PHONE_MENU_DATA.map((item) => (
-                <li key={item.label} className="text-start">
-                  <NavLink
-                    className={({ isActive }) =>
-                      `btn rounded-md ${isActive ? "bg-black text-white" : ""}`
-                    }
-                    to={item.link}
-                  >
-                    <img
-                      src={item.svg}
-                      alt={item.label}
-                      className="w-6 h-6 inline-block mr-2"
-                    />
-                    {item.label}
-                  </NavLink>
-                </li>
-              ))}
-              <li
-                className="text-start btn rounded-md text-red-600"
-                onClick={handleLogoutUser}
-              >
-                Logout
-              </li>
-            </ul>
-          </div>
-
-          <div className="indicator">
-            {UserCart?.selectedProducts?.length > 0 && (
-              <span className="indicator-item badge badge-secondary">{UserCart?.selectedProducts.length}</span>
+              02. Products
+            </NavLink>
+            {isLoggedIn && (
+              <>
+                <NavLink
+                  to="/wishlist"
+                  className={({ isActive }) =>
+                    `text-xs font-bold uppercase tracking-widest px-3 py-2 transition-colors duration-150 ${
+                      isActive ? "bg-black text-white" : "text-black hover:bg-swiss-muted"
+                    }`
+                  }
+                >
+                  03. Wishlist
+                </NavLink>
+                <NavLink
+                  to="/orders"
+                  className={({ isActive }) =>
+                    `text-xs font-bold uppercase tracking-widest px-3 py-2 transition-colors duration-150 ${
+                      isActive ? "bg-black text-white" : "text-black hover:bg-swiss-muted"
+                    }`
+                  }
+                >
+                  04. Orders
+                </NavLink>
+              </>
             )}
+          </nav>
+        </div>
+
+        {/* Right Action Items */}
+        {isLoggedIn ? (
+          <div className="hidden sm:flex items-center gap-3">
+            {userData?.userRole === 2 && (
+              <Link
+                to="/admin"
+                className="bg-swiss-muted text-black border-2 border-black font-bold uppercase text-xs tracking-widest px-4 py-2 hover:bg-black hover:text-white transition-colors duration-150"
+              >
+                Admin Console
+              </Link>
+            )}
+
+            <div className="dropdown dropdown-end">
+              <div
+                tabIndex={0}
+                role="button"
+                className="bg-white text-black border-2 border-black font-bold uppercase text-xs tracking-widest px-4 py-2 flex items-center gap-2 cursor-pointer hover:bg-swiss-muted transition-colors duration-150"
+              >
+                <span>Menu</span>
+                <span className="text-swiss-accent font-black">↓</span>
+              </div>
+              <ul
+                tabIndex={0}
+                className="dropdown-content border-2 border-black bg-white z-50 w-56 p-0 mt-1 shadow-none rounded-none"
+              >
+                {PHONE_MENU_DATA.map((item) => (
+                  <li key={item.label} className="border-b border-black last:border-b-0">
+                    <NavLink
+                      className={({ isActive }) =>
+                        `block px-4 py-3 text-xs font-bold uppercase tracking-widest transition-colors duration-150 ${
+                          isActive
+                            ? "bg-black text-white"
+                            : "text-black hover:bg-swiss-accent hover:text-white"
+                        }`
+                      }
+                      to={item.link}
+                    >
+                      {item.label}
+                    </NavLink>
+                  </li>
+                ))}
+                <li className="border-t-2 border-black">
+                  <button
+                    className="w-full text-left px-4 py-3 text-xs font-bold uppercase tracking-widest bg-swiss-accent text-white hover:bg-black transition-colors duration-150"
+                    onClick={handleLogoutUser}
+                  >
+                    Logout
+                  </button>
+                </li>
+              </ul>
+            </div>
+
             <label
-              className="btn drawer-button border-2 rounded-md"
               htmlFor="my-drawer-4"
+              className="bg-black text-white border-2 border-black font-bold uppercase text-xs tracking-widest px-4 py-2 flex items-center gap-2 cursor-pointer hover:bg-swiss-accent transition-colors duration-150"
             >
-              <a rel="noopener noreferrer">
-                <img
-                  src="/cart.svg"
-                  alt="cart"
-                  className="w-6 h-6 inline-block mr-2"
-                />
-                Cart
-              </a>
+              <span>Cart</span>
+              {UserCart?.selectedProducts?.length > 0 && (
+                <span className="bg-swiss-accent text-white px-2 py-0.5 text-[10px] font-black border border-white">
+                  {UserCart?.selectedProducts.length}
+                </span>
+              )}
             </label>
           </div>
-        </div>
-      ) : (
-        <div className="hidden sm:flex navbar-end gap-4 mt-3 mr-3">
-          <NavLink className="btn rounded-md" to="/login">
-            <img
-              src="/login.svg"
-              alt="login"
-              className="w-6 h-6 inline-block mr-2"
-            />
-            Log in
-          </NavLink>
-          <NavLink className="btn rounded-md" to="/signup">
-            <img
-              src="/signup.svg"
-              alt="signup"
-              className="w-6 h-6 inline-block mr-2"
-            />
-            Sign up
-          </NavLink>
-        </div>
-      )}
-      <div className="flex sm:hidden navbar-end gap-4 mt-3 mr-3">
-        <label
-          className="z-40 btn btn-circle swap swap-rotate"
-          htmlFor="my-drawer-4"
-          aria-label="close sidebar"
-          onClick={handleIsMenuOpen}
-        >
-          <input
-            type="checkbox"
-            checked={isMenuOpen}
-            onChange={handleIsMenuOpen}
-          />
+        ) : (
+          <div className="hidden sm:flex items-center gap-3">
+            <NavLink
+              to="/login"
+              className="bg-white text-black border-2 border-black font-bold uppercase text-xs tracking-widest px-5 py-2.5 hover:bg-black hover:text-white transition-colors duration-150"
+            >
+              Log In
+            </NavLink>
+            <NavLink
+              to="/signup"
+              className="bg-black text-white border-2 border-black font-bold uppercase text-xs tracking-widest px-5 py-2.5 hover:bg-swiss-accent hover:border-swiss-accent transition-colors duration-150"
+            >
+              Sign Up
+            </NavLink>
+          </div>
+        )}
 
-          {isMenuOpen ? (
-            <svg
-              className="swap-on fill-current"
-              xmlns="http://www.w3.org/2000/svg"
-              width="32"
-              height="32"
-              viewBox="0 0 512 512"
-            >
-              <polygon points="400 145.49 366.51 112 256 222.51 145.49 112 112 145.49 222.51 256 112 366.51 145.49 400 256 289.49 366.51 400 400 366.51 289.49 256 400 145.49" />
-            </svg>
-          ) : (
-            <svg
-              className="swap-off fill-current"
-              xmlns="http://www.w3.org/2000/svg"
-              width="32"
-              height="32"
-              viewBox="0 0 512 512"
-            >
-              <path d="M64,384H448V341.33H64Zm0-106.67H448V234.67H64ZM64,128v42.67H448V128Z" />
-            </svg>
-          )}
-        </label>
+        {/* Mobile Toggle Button */}
+        <div className="flex sm:hidden items-center gap-3">
+          <label
+            htmlFor="my-drawer-4"
+            className="border-2 border-black bg-black text-white p-2 text-xs font-bold uppercase tracking-wider cursor-pointer"
+            onClick={handleIsMenuOpen}
+          >
+            {isMenuOpen ? "CLOSE" : "MENU"}
+          </label>
+        </div>
       </div>
-    </div>
+    </header>
   );
 }

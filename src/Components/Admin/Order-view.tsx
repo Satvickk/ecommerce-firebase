@@ -25,33 +25,43 @@ export default function OrderView() {
   }, [UserDetails, dispatch]);
 
   return (
-    <div className="text-center w-full flex justify-center items-center flex-col gap-8 p-2 sm:p-12 overflow-x-scroll h-screen sm:h-auto relative sm:static">
-      <h1 className="divider divider-start hidden sm:block text-2xl sm:text-3xl font-normal">
-        Orders
-      </h1>
-      <div className="py-4 w-full sm:static absolute left-0 top-0">
-        <table className="table w-full">
+    <div className="w-full space-y-6">
+      <div className="flex items-center justify-between border-b-4 border-black pb-4">
+        <h2 className="text-2xl font-black uppercase tracking-tight text-black">ALL ORDERS DATABASE</h2>
+        <span className="bg-black text-white px-3 py-1 text-xs font-black uppercase tracking-widest">
+          TOTAL: {Orders?.content?.length || 0}
+        </span>
+      </div>
+
+      <div className="w-full border-4 border-black bg-white overflow-x-auto">
+        <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-black text-white">
-              <th>Products</th>
-              <th>Delivery Address</th>
-              <th>Customer Email</th>
-              <th>Customer Contact</th>
-              <th>OrderId</th>
-              <th>Order Date</th>
-              <th>Order Time</th>
-              <th>Delivery Status</th>
-              <th>Delivery Date</th>
-              <th>Cancelled Date</th>
-              <th>Total Cost (₹)</th>
-              <th></th>
-              <th></th>
+            <tr className="bg-black text-white text-xs font-black uppercase tracking-widest border-b-4 border-black">
+              <th className="p-4">HARDWARE PRODUCTS</th>
+              <th className="p-4">ADDRESS</th>
+              <th className="p-4">EMAIL</th>
+              <th className="p-4">CONTACT</th>
+              <th className="p-4">ORDER ID</th>
+              <th className="p-4">DATE</th>
+              <th className="p-4">TIME</th>
+              <th className="p-4">STATUS</th>
+              <th className="p-4">DELIVERY DATE</th>
+              <th className="p-4 text-right">COST</th>
+              <th className="p-4">ACTIONS</th>
             </tr>
           </thead>
           <tbody>
-            {Orders?.content?.map((item, index) => (
-              <AdminOrderRow key={item.docId || index} data={item} />
-            ))}
+            {Orders?.content?.length > 0 ? (
+              Orders.content.map((item, index) => (
+                <AdminOrderRow key={item.docId || index} data={item} />
+              ))
+            ) : (
+              <tr>
+                <td colSpan={11} className="p-12 text-center text-xs font-bold uppercase tracking-wider text-gray-500 bg-swiss-muted">
+                  NO ORDERS FOUND IN DATABASE.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

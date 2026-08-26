@@ -42,43 +42,46 @@ export default function ProductView() {
   };
 
   return (
-    <div className="text-center w-full min-h-screen flex justify-center items-center flex-col gap-8 p-2 sm:p-12 flex-grow overflow-x-scroll sm:h-auto relative sm:static">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full">
-        <h1 className="divider divider-start hidden sm:block text-2xl sm:text-3xl font-normal">
-          Products
-        </h1>
+    <div className="w-full space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b-4 border-black pb-4 gap-4">
+        <div>
+          <h2 className="text-2xl font-black uppercase tracking-tight text-black">PRODUCT CATALOG MANAGEMENT</h2>
+          <span className="text-xs font-bold text-gray-500 uppercase tracking-widest block">TOTAL CATALOG ITEMS: {AllProductsDetails?.content?.length || 0}</span>
+        </div>
         <button
-          className="btn btn-info rounded-md text-white font-bold"
+          className="bg-black text-white font-black text-xs uppercase tracking-widest px-6 py-3 border-2 border-black hover:bg-swiss-accent hover:border-swiss-accent transition-colors duration-150 rounded-none"
           onClick={handleOpenAddModal}
         >
-          Add +
+          ADD NEW PRODUCT +
         </button>
       </div>
-      <dialog id="add-modal" className="modal">
-        <div className="modal-box">
-          <ProductFormModal
-            editData={null}
-            onClose={handleCloseAddModal}
-          />
-          <button
-            className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-            onClick={handleCloseAddModal}
-          >
-            ✕
-          </button>
+
+      <dialog id="add-modal" className="modal modal-bottom sm:modal-middle">
+        <div className="modal-box border-4 border-black bg-white rounded-none p-0 max-w-2xl w-full">
+          <div className="bg-black text-white p-4 border-b-4 border-black flex items-center justify-between">
+            <h3 className="font-black text-sm uppercase tracking-widest text-swiss-accent">CREATE NEW PRODUCT ITEM</h3>
+            <button onClick={handleCloseAddModal} className="text-white hover:text-swiss-accent font-black text-lg">✕</button>
+          </div>
+          <div className="p-6">
+            <ProductFormModal
+              editData={null}
+              onClose={handleCloseAddModal}
+            />
+          </div>
         </div>
       </dialog>
-      <div className="py-4 w-full sm:static absolute left-0 top-0">
-        <table className="table w-full">
+
+      <div className="w-full border-4 border-black bg-white overflow-x-auto">
+        <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-black text-white">
-              <th></th>
-              <th>Product</th>
-              <th>Price (&#8377;)</th>
-              <th>Product Type</th>
-              <th>Status</th>
-              <th>Reviews</th>
-              <th></th>
+            <tr className="bg-black text-white text-xs font-black uppercase tracking-widest border-b-4 border-black">
+              <th className="p-4">IMAGE</th>
+              <th className="p-4">TITLE</th>
+              <th className="p-4">PRICE</th>
+              <th className="p-4">CATEGORY</th>
+              <th className="p-4">AVAILABILITY</th>
+              <th className="p-4">REVIEW</th>
+              <th className="p-4">ACTIONS</th>
             </tr>
           </thead>
           <tbody>

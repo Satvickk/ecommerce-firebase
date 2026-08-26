@@ -30,9 +30,9 @@ export default function FilterSelect({ title, options, filterfunction, removedFi
   }
 
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-2 items-center">
       <select
-        className="select select-bordered w-full max-w-xs"
+        className="bg-white border-2 border-black font-bold uppercase text-xs tracking-wider px-4 py-2.5 focus:border-swiss-accent focus:outline-none rounded-none cursor-pointer"
         value={selectedValue}
         onChange={handleChange}
       >
@@ -46,8 +46,11 @@ export default function FilterSelect({ title, options, filterfunction, removedFi
         ))}
       </select>
       {showBtn && (
-        <button className="btn-primary btn" onClick={handleRemoveFilter}>
-          Remove filter
+        <button
+          className="bg-swiss-accent text-white font-black uppercase text-xs tracking-widest px-4 py-2.5 border-2 border-swiss-accent hover:bg-black hover:border-black transition-colors duration-150 rounded-none"
+          onClick={handleRemoveFilter}
+        >
+          CLEAR ✕
         </button>
       )}
     </div>

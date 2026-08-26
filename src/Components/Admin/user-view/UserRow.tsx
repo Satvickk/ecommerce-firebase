@@ -33,19 +33,25 @@ export default function UserRow({ responseData }: UserRowProps) {
 
   return (
     <>
-      <tr className="bg-white">
-        <td>{responseData?.name}</td>
-        <td>{responseData?.email}</td>
-        <td>{responseData?.contact}</td>
-        <td>{responseData?.password}</td>
-        <td>{responseData?.pincode}</td>
-        <td>{responseData?.address}</td>
-        <td className="flex gap-3">
-          <button className="btn btn-success" onClick={handleUpdateClick}>
-            Edit
+      <tr className="border-b border-black last:border-b-0 hover:bg-swiss-muted text-xs font-bold uppercase tracking-wider text-black">
+        <td className="p-4 font-black">{responseData?.name}</td>
+        <td className="p-4">{responseData?.email}</td>
+        <td className="p-4">{responseData?.contact}</td>
+        <td className="p-4 font-mono text-[10px]">••••••••</td>
+        <td className="p-4">{responseData?.pincode}</td>
+        <td className="p-4">{responseData?.address}</td>
+        <td className="p-4 flex gap-2">
+          <button
+            className="bg-black text-white px-3 py-1.5 text-[10px] font-black uppercase tracking-widest border border-black hover:bg-swiss-accent transition-colors duration-150 rounded-none"
+            onClick={handleUpdateClick}
+          >
+            EDIT
           </button>
-          <button className="btn btn-error" onClick={handleDeleteClick}>
-            Delete
+          <button
+            className="bg-swiss-accent text-white px-3 py-1.5 text-[10px] font-black uppercase tracking-widest border border-swiss-accent hover:bg-black hover:border-black transition-colors duration-150 rounded-none"
+            onClick={handleDeleteClick}
+          >
+            DELETE
           </button>
         </td>
       </tr>
@@ -85,18 +91,26 @@ export function DeleteModal({ onClose, id }: DeleteModalProps) {
 
   return (
     <dialog open className="modal modal-bottom sm:modal-middle">
-      <div className="modal-box">
-        <h3 className="font-bold text-lg text-red-600">Delete User</h3>
-        <p className="py-4">
-          Are you sure you want to delete user permanently?
-        </p>
-        <div className="modal-action">
-          <LoadingButton className="btn btn-primary mr-1" isLoading={loading} onClick={() => handleDeleteUserProfile(id)}>
-            Delete
-          </LoadingButton>
-          <button className="btn" onClick={onClose}>
-            Close
-          </button>
+      <div className="modal-box border-4 border-black bg-white rounded-none p-0 max-w-md w-full">
+        <div className="bg-black text-white p-4 border-b-4 border-black">
+          <h3 className="font-black text-sm uppercase tracking-widest text-swiss-accent">DELETE USER ACCOUNT</h3>
+        </div>
+        <div className="p-6 space-y-4">
+          <p className="text-xs font-bold uppercase tracking-wider text-black leading-relaxed border-l-4 border-swiss-accent pl-3">
+            PERMANENTLY ERASE THIS USER PROFILE AND ASSOCIATED SYSTEM RECORDS?
+          </p>
+          <div className="flex flex-col gap-3 pt-4 border-t-2 border-black">
+            <LoadingButton
+              isLoading={loading}
+              className="w-full bg-swiss-accent text-white border-2 border-swiss-accent font-black text-xs uppercase tracking-widest py-3"
+              onClick={() => handleDeleteUserProfile(id)}
+            >
+              CONFIRM DELETE
+            </LoadingButton>
+            <button className="w-full bg-white text-black font-black text-xs uppercase tracking-widest py-3 border-2 border-black hover:bg-swiss-muted" onClick={onClose}>
+              CANCEL
+            </button>
+          </div>
         </div>
       </div>
     </dialog>

@@ -28,56 +28,52 @@ export default function CartCard({ data }: CartCardProps) {
   };
 
   return (
-    <div className="card card-side bg-base-100 shadow-xl flex-col sm:flex-row items-center relative">
+    <div className="border-2 border-black bg-white p-6 grid grid-cols-1 sm:grid-cols-12 gap-6 items-center rounded-none relative">
       <button
-        className="hidden sm:block btn sm:btn-sm btn-circle btn-ghost absolute right-2 top-2 z-50"
+        className="absolute top-3 right-3 text-black font-black text-base hover:text-swiss-accent transition-colors duration-150"
         onClick={RemoveFromCart}
+        title="Remove Item"
       >
         ✕
       </button>
-      <figure className="sm:h-[200px] sm:w-[200px] overflow-hidden ">
-        <img src={data?.featuredImage} alt="product" className="object-cover" />
-      </figure>
-      <div className="card-body">
-        <h2 className="card-title">{data?.title}</h2>
-        <p className="text-start font-bold text-gray-700 text-lg">
-          &#8377; {data?.price}
-        </p>
-        <div className="card-actions justify-center sm:justify-end gap-20 sm:gap-0 mt-6">
-          <div className="join">
+
+      <div className="sm:col-span-3 border-2 border-black bg-swiss-muted p-4 h-36 flex items-center justify-center">
+        <img src={data?.featuredImage} alt={data?.title} className="max-h-full object-contain" />
+      </div>
+
+      <div className="sm:col-span-9 flex flex-col justify-between space-y-4">
+        <div>
+          <h3 className="font-black text-lg uppercase tracking-tight text-black">{data?.title}</h3>
+          <span className="text-xl font-black text-black">₹ {data?.price}</span>
+        </div>
+
+        <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-black">
+          <div className="flex items-center border-2 border-black">
             <button
-              className={`btn join-item rounded-l-full ${
-                data?.quantity < 2 ? "btn-disabled btn-ghost" : ""
-              }`}
+              className="w-10 h-10 flex items-center justify-center font-black bg-white hover:bg-black hover:text-white transition-colors duration-150 disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-black"
+              disabled={data?.quantity < 2}
               onClick={decreaseQuantity}
             >
               -
             </button>
-            <p
-              className="input input-bordered join-item w-12 text-center flex items-center justify-center"
-            >
+            <div className="w-12 h-10 border-x-2 border-black flex items-center justify-center font-black text-sm bg-swiss-muted">
               {data?.quantity}
-            </p>
+            </div>
             <button
-              className={`btn join-item rounded-r-full ${
-                data?.quantity >= 5 ? "btn-disabled btn-ghost" : ""
-              }`}
+              className="w-10 h-10 flex items-center justify-center font-black bg-white hover:bg-black hover:text-white transition-colors duration-150 disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-black"
+              disabled={data?.quantity >= 5}
               onClick={increaseQuantity}
             >
               +
             </button>
           </div>
-          <button
-            className="sm:hidden block btn btn-primary"
-            onClick={RemoveFromCart}
-          >
-            Remove
-          </button>
+
+          <div className="text-right">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-gray-500 block">SUBTOTAL</span>
+            <span className="text-lg font-black text-black">₹ {data?.price * data?.quantity}</span>
+          </div>
         </div>
       </div>
-      <p className="text-xs absolute bottom-2 right-2">
-        maximun quantity for each product is 5
-      </p>
     </div>
   );
 }
