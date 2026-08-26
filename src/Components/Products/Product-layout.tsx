@@ -1,0 +1,54 @@
+import { useEffect } from "react";
+import ProductStripView from "./Product-strip-view";
+import PRODUCT_SERVICE from "../../Firebase/productService";
+import { setAllProductDetails } from "../../redux/productSlice";
+import { toast } from "react-toastify";
+import ComingSoon from "../common/ComingSoon";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+
+export default function ProductLayout() {
+  const dispatch = useAppDispatch();
+  const AllProductsDetails = useAppSelector((state) => state.AllProductsDetails);
+
+  useEffect(() => {
+    if (AllProductsDetails.content.length === 0) {
+      const getAllProductsDetails = async () => {
+        try {
+          const ProductData = await PRODUCT_SERVICE.getProducts();
+          dispatch(
+            setAllProductDetails({
+              content: ProductData,
+              totalDoc: ProductData.length,
+            })
+          );
+        } catch (error) {
+          console.log("error:", error);
+          toast.error("Unable to fetch product details");
+        }
+      };
+
+      getAllProductsDetails();
+    }
+  }, [AllProductsDetails.content.length, dispatch]);
+
+  return (
+    <>
+      <h1 className="divider text-2xl sm:text-3xl my-8 font-normal">
+        Products
+      </h1>
+      <div className="w-full p-4 grid sm:grid-cols-3">
+        <div className="sm:col-span-1 bg-gray-200 p-4 rounded-md h-auto">
+          <h1 className="divider divider-start text-md sm:text-xl my-8 font-normal">
+            Filters
+          </h1>
+          <ComingSoon />
+        </div>
+        <div className="sm:col-span-2 p-4 flex flex-col gap-6">
+          {AllProductsDetails?.content.map((item, index) => (
+            <ProductStripView key={item.docId || index} data={item} />
+          ))}
+        </div>
+      </div>
+    </>
+  );
+}
